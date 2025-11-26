@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getFeaturedProducts, getNews } from "@/lib/api";
+import { getFeaturedProducts, getNews, getHomepageContent, richTextToString } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
 import Button from "@/components/Button";
 import Image from "next/image";
@@ -9,20 +9,34 @@ const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
 export default async function HomePage() {
   const featuredProducts = await getFeaturedProducts();
   const latestNews = await getNews(3); // Récupérer les 3 dernières actualités
+  const homepageContent = await getHomepageContent();
+
+  // Valeurs par défaut si pas de contenu
+  const content = {
+    heroTitle: homepageContent?.heroTitle || "Bienvenue sur e-kom",
+    heroSubtitle: homepageContent?.heroSubtitle || "Votre boutique en ligne personnalisable pour tous vos besoins",
+    heroButtonText: homepageContent?.heroButtonText || "Découvrir la boutique",
+    welcomeTitle: homepageContent?.welcomeTitle || "Une solution e-commerce clé en main",
+    welcomeText: homepageContent?.welcomeText 
+      ? richTextToString(homepageContent.welcomeText)
+      : "e-kom est une plateforme e-commerce en marque blanche, conçue pour s'adapter à votre business. Simple, rapide et efficace.",
+    featuredSectionTitle: homepageContent?.featuredSectionTitle || "Produits phares",
+    newsSectionTitle: homepageContent?.newsSectionTitle || "Dernières actualités",
+  };
 
   return (
     <div className="space-y-12">
       {/* Bannière Hero */}
       <section className="bg-primary text-white rounded-xl p-12 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Bienvenue sur e-kom
+          {content.heroTitle}
         </h1>
         <p className="text-xl mb-8 text-gray-200">
-          Votre boutique en ligne personnalisable pour tous vos besoins
+          {content.heroSubtitle}
         </p>
         <Link href="/produits">
           <Button variant="secondary">
-            Découvrir la boutique
+            {content.heroButtonText}
           </Button>
         </Link>
       </section>
@@ -30,11 +44,10 @@ export default async function HomePage() {
       {/* Présentation */}
       <section className="text-center max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">
-          Une solution e-commerce clé en main
+          {content.welcomeTitle}
         </h2>
-        <p className="text-gray-600 text-lg">
-          e-kom est une plateforme e-commerce en marque blanche, 
-          conçue pour s'adapter à votre business. Simple, rapide et efficace.
+        <p className="text-gray-600 text-lg whitespace-pre-line">
+          {content.welcomeText}
         </p>
       </section>
 
@@ -42,7 +55,7 @@ export default async function HomePage() {
       <section>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold text-gray-800">
-            Produits phares
+            {content.featuredSectionTitle}
           </h2>
           <Link href="/produits" className="text-primary hover:underline font-medium">
             Voir tout →
@@ -56,7 +69,7 @@ export default async function HomePage() {
         <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold text-gray-800">
-              Dernières actualités
+              {content.newsSectionTitle}
             </h2>
             <Link href="/actualites" className="text-primary hover:underline font-medium">
               Voir toutes les actualités →

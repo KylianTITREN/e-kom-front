@@ -14,9 +14,6 @@ export default function ContactPage() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Log dans la console pour l'instant
-    console.log("📧 Formulaire de contact soumis:", formData);
-    
     setIsSubmitted(true);
     
     // Réinitialiser le formulaire

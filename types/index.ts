@@ -48,6 +48,37 @@ export interface RichTextBlock {
   }>;
 }
 
+export interface Category {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubCategory {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Brand {
+  id: number;
+  documentId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  logo?: StrapiImage;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Product {
   id: number;
   documentId: string;
@@ -57,9 +88,9 @@ export interface Product {
   price: number;
   images?: StrapiImage[];
   ageRestricted?: boolean;
-  category?: string;
-  subCategory?: string;
-  brand?: string;
+  category?: Category;
+  subCategory?: SubCategory;
+  brand?: Brand;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -89,6 +120,26 @@ export interface LegalPage {
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
+}
+
+export interface HomepageContent {
+  id: number;
+  documentId: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroButtonText: string;
+  welcomeTitle: string;
+  welcomeText: RichTextBlock[] | string;
+  featuredSectionTitle: string;
+  newsSectionTitle: string;
+  merchant?: {
+    id: number;
+    documentId: string;
+    name: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  publishedAt?: string;
 }
 
 export interface StrapiResponse<T> {

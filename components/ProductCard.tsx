@@ -58,14 +58,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
             {brand && (
               <span className="bg-gray-100 px-2 py-1 rounded-md font-medium">
-                {brand}
+                {brand.name}
               </span>
             )}
             {category && (
               <span className="text-gray-400">•</span>
             )}
             {category && (
-              <span>{category}</span>
+              <span>{category.name}</span>
             )}
           </div>
         )}

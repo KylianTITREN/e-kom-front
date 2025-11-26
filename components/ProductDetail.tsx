@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import NextImage from "next/image";
 import { useCart } from "@/context/CartContext";
 import Button from "@/components/Button";
 import ImageGallery from "@/components/ImageGallery";
@@ -76,19 +77,29 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   {brand && (
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-700 w-32">Marque :</span>
-                      <span className="text-gray-900 font-medium">{brand}</span>
+                      <span className="text-gray-900 font-medium">{brand.name}</span>
+                      {brand.logo && (
+                        <div className="relative w-8 h-8 ml-2">
+                          <NextImage
+                            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${brand.logo.url}`}
+                            alt={brand.name}
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
                   {category && (
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-700 w-32">Catégorie :</span>
-                      <span className="text-gray-900">{category}</span>
+                      <span className="text-gray-900">{category.name}</span>
                     </div>
                   )}
                   {subCategory && (
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-700 w-32">Sous-catégorie :</span>
-                      <span className="text-gray-900">{subCategory}</span>
+                      <span className="text-gray-900">{subCategory.name}</span>
                     </div>
                   )}
                 </div>

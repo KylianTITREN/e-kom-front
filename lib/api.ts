@@ -1,4 +1,4 @@
-import { Product, StrapiResponse, RichTextBlock, News, LegalPage } from "@/types";
+import { Product, StrapiResponse, RichTextBlock, News, LegalPage, HomepageContent } from "@/types";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
@@ -18,7 +18,7 @@ export async function getProducts(): Promise<Product[]> {
   try {
     // On récupère tous les produits avec images et merchant
     // Le filtre Strapi sur merchant ne fonctionne pas, donc on filtre côté client
-    const url = `${STRAPI_URL}/api/products?filters[merchant][id][$eq]=${merchantId}&populate=*`;
+    const url = `${STRAPI_URL}/api/products?filters[merchant][id][$eq]=${merchantId}&populate[images]=true&populate[merchant]=true&populate[category]=true&populate[subCategory]=true&populate[brand][populate][logo]=true`;
 
     const res = await fetch(url, { cache: "no-store" });
 
@@ -35,7 +35,6 @@ export async function getProducts(): Promise<Product[]> {
       const filtered = data.data.filter((product: any) => {
         return product.merchant?.id?.toString() === merchantId;
       });
-      console.log(`🔍 Produits filtrés pour merchant ${merchantId}:`, filtered.length);
       return filtered;
     }
     
@@ -51,23 +50,35 @@ export async function getProductBySlug(slugOrId: string): Promise<Product | null
   const merchantId = process.env.NEXT_PUBLIC_MERCHANT_ID;
   
   try {
-    // Filtrage par slug + merchant
+    // Filtrage par slug + merchant  
     const merchantFilter = merchantId ? `&filters[merchant][id][$eq]=${merchantId}` : '';
+    // Utiliser populate deep level 2 pour récupérer toutes les relations
     let res = await fetch(
-      `${STRAPI_URL}/api/products?filters[slug][$eq]=${slugOrId}${merchantFilter}&populate=*`,
+      `${STRAPI_URL}/api/products?filters[slug][$eq]=${slugOrId}${merchantFilter}&populate[0]=images&populate[1]=merchant&populate[2]=category&populate[3]=subCategory&populate[4]=brand&populate[5]=brand.logo`,
       { cache: "no-store" }
     );
 
-    if (!res.ok) throw new Error("Erreur lors de la récupération du produit");
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("❌ Erreur API produit:", res.status, errorText);
+      throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+    }
 
     let data: StrapiResponse<Product[]> = await res.json();
 
     // Si pas trouvé, essaie par documentId (rare)
     if (!data.data || data.data.length === 0) {
       res = await fetch(
-        `${STRAPI_URL}/api/products?filters[documentId][$eq]=${slugOrId}${merchantFilter}&populate=*`,
+        `${STRAPI_URL}/api/products?filters[documentId][$eq]=${slugOrId}${merchantFilter}&populate[images]=true&populate[merchant]=true&populate[category]=true&populate[subCategory]=true&populate[brand][populate][logo]=true`,
         { cache: "no-store" }
       );
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("❌ Erreur API produit (documentId):", res.status, errorText);
+        return null;
+      }
+      
       data = await res.json();
     }
 
@@ -136,13 +147,21 @@ export async function getNewsBySlug(slug: string): Promise<News | null> {
 export async function getLegalPages(): Promise<LegalPage[]> {
   const merchantId = process.env.NEXT_PUBLIC_MERCHANT_ID;
   try {
-    const merchantFilter = merchantId ? `filters[merchant][id][$eq]=${merchantId}&` : '';
-    const url = `${STRAPI_URL}/api/legal-pages?${merchantFilter}sort=order:asc`;
+    // Note: filtre merchant temporairement désactivé car les pages n'ont pas encore de merchant assigné
+    const url = `${STRAPI_URL}/api/legal-pages?sort=order:asc`;
     const res = await fetch(url, { cache: "no-store" });
     
     if (!res.ok) throw new Error("Erreur lors de la récupération des pages légales");
 
     const data: StrapiResponse<LegalPage[]> = await res.json();
+    
+    // Si merchantId est défini, filtrer côté client
+    if (merchantId) {
+      return data.data.filter((page: any) => {
+        return !page.merchant || page.merchant?.id?.toString() === merchantId;
+      });
+    }
+    
     return data.data;
   } catch (error) {
     console.error("Erreur getLegalPages:", error);
@@ -154,16 +173,53 @@ export async function getLegalPages(): Promise<LegalPage[]> {
 export async function getLegalPageBySlug(slug: string): Promise<LegalPage | null> {
   const merchantId = process.env.NEXT_PUBLIC_MERCHANT_ID;
   try {
-    const merchantFilter = merchantId ? `&filters[merchant][id][$eq]=${merchantId}` : '';
-    const url = `${STRAPI_URL}/api/legal-pages?filters[slug][$eq]=${slug}${merchantFilter}`;
+    // Note: filtre merchant temporairement désactivé car les pages n'ont pas encore de merchant assigné
+    // const merchantFilter = merchantId ? `&filters[merchant][id][$eq]=${merchantId}` : '';
+    const url = `${STRAPI_URL}/api/legal-pages?filters[slug][$eq]=${slug}`;
     const res = await fetch(url, { cache: "no-store" });
     
-    if (!res.ok) throw new Error("Erreur lors de la récupération de la page légale");
+    if (!res.ok) {
+      console.error("Erreur API legal page:", res.status, res.statusText);
+      throw new Error("Erreur lors de la récupération de la page légale");
+    }
 
     const data: StrapiResponse<LegalPage[]> = await res.json();
+    
+    // Si merchantId est défini, filtrer côté client
+    if (merchantId && data.data.length > 0) {
+      const filtered = data.data.filter((page: any) => {
+        return !page.merchant || page.merchant?.id?.toString() === merchantId;
+      });
+      return filtered[0] || null;
+    }
+    
     return data.data[0] || null;
   } catch (error) {
     console.error("Erreur getLegalPageBySlug:", error);
+    return null;
+  }
+}
+
+// Récupérer le contenu de la page d'accueil
+export async function getHomepageContent(): Promise<HomepageContent | null> {
+  const merchantId = process.env.NEXT_PUBLIC_MERCHANT_ID;
+  try {
+    // homepage-content est maintenant un Collection Type avec relation merchant
+    const merchantFilter = merchantId ? `filters[merchant][id][$eq]=${merchantId}&` : '';
+    const url = `${STRAPI_URL}/api/homepage-content?${merchantFilter}populate=merchant`;
+    const res = await fetch(url, { cache: "no-store" });
+    
+    if (!res.ok) {
+      console.error("Erreur API homepage-content:", res.status, res.statusText);
+      return null;
+    }
+
+    const json = await res.json();
+    
+    // Collection Type retourne { data: [...] }
+    return json.data?.[0] || null;
+  } catch (error) {
+    console.error("Erreur getHomepageContent:", error);
     return null;
   }
 }

@@ -42,7 +42,7 @@ export default function Footer() {
             <h3 className="font-bold text-lg mb-4">Informations légales</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/legal/cgv" className="hover:underline text-gray-200">
+                <Link href="/legal/conditions-generales-de-vente" className="hover:underline text-gray-200">
                   Conditions générales de vente
                 </Link>
               </li>
@@ -52,12 +52,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/legal/politique-confidentialite" className="hover:underline text-gray-200">
+                <Link href="/legal/politique-de-confidentialites" className="hover:underline text-gray-200">
                   Politique de confidentialité
                 </Link>
               </li>
               <li>
-                <Link href="/legal/cookies" className="hover:underline text-gray-200">
+                <Link href="/legal/politique-des-cookies" className="hover:underline text-gray-200">
                   Politique des cookies
                 </Link>
               </li>
