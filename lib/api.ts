@@ -160,7 +160,7 @@ export async function getLegalPageBySlug(slug: string): Promise<LegalPage | null
 // Récupérer le contenu de la page d'accueil
 export async function getHomepageContent(): Promise<HomepageContent | null> {
   try {
-    const url = `${STRAPI_URL}/api/homepage-content`;
+    const url = `${STRAPI_URL}/api/homepage-content?populate=*`;
     const res = await fetch(url, { cache: "no-store" });
     
     if (!res.ok) {
@@ -169,9 +169,8 @@ export async function getHomepageContent(): Promise<HomepageContent | null> {
     }
 
     const json = await res.json();
-    
-    // Collection Type retourne { data: [...] }
-    return json.data?.[0] || null;
+    // Single Type retourne { data: { ...attributes } }
+    return json.data || null;
   } catch (error) {
     console.error("Erreur getHomepageContent:", error);
     return null;

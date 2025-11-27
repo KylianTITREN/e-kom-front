@@ -3,7 +3,6 @@
 import Link from "next/link";
 import NextImage from "next/image";
 import { useCart } from "@/context/CartContext";
-import Button from "@/components/Button";
 import ImageGallery from "@/components/ImageGallery";
 import { Product } from "@/types";
 import { richTextToString } from "@/lib/api";
@@ -39,108 +38,59 @@ export default function ProductDetail({ product }: ProductDetailProps) {
     setTimeout(() => setIsAdded(false), 2000);
   };
 
-  return (
-    <div className="max-w-6xl mx-auto">
-      {/* Breadcrumb */}
-      <div className="mb-6 text-sm text-gray-600">
-        <Link href="/" className="hover:text-primary">
-          Accueil
-        </Link>
-        {" > "}
-        <Link href="/produits" className="hover:text-primary">
-          Boutique
-        </Link>
-        {" > "}
-        <span className="text-gray-800">{name}</span>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white p-8 rounded-lg shadow-md">
-        {/* Galerie d'images */}
-        <ImageGallery images={images || []} productName={name} />
-
-        {/* Informations */}
-        <div className="flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-4xl font-bold text-gray-800">{name}</h1>
-              {ageRestricted && (
-                <span className="bg-orange-500 text-white text-sm font-bold px-3 py-1 rounded-full">
-                  18+
-                </span>
-              )}
+        return (
+          <div className="max-w-6xl mx-auto">
+            {/* Breadcrumb */}
+            <div className="mb-6 text-sm text-gray-600 md:pt-6" style={{ paddingTop: undefined }}>
+              <Link href="/" className="hover:text-primary">Accueil</Link>
+              {" > "}
+              <Link href="/produits" className="hover:text-primary">Boutique</Link>
+              {" > "}
+              <span className="text-gray-800">{name}</span>
             </div>
-
-            {/* Informations produit : Marque, Catégorie, Sous-catégorie */}
-            {(brand || category || subCategory) && (
-              <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="grid grid-cols-1 gap-2 text-sm">
-                  {brand && (
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 w-32">Marque :</span>
-                      <span className="text-gray-900 font-medium">{brand.name}</span>
-                      {brand.logo && (
-                        <div className="relative w-8 h-8 ml-2">
-                          <NextImage
-                            src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${brand.logo.url}`}
-                            alt={brand.name}
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {category && (
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 w-32">Catégorie :</span>
-                      <span className="text-gray-900">{category.name}</span>
-                    </div>
-                  )}
-                  {subCategory && (
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 w-32">Sous-catégorie :</span>
-                      <span className="text-gray-900">{subCategory.name}</span>
-                    </div>
-                  )}
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-start">
+              {/* Flag 18+ en haut à droite, style carte produit */}
+              {ageRestricted && (
+            <div className="absolute top-3 right-3 bg-primary text-background-light text-xs font-semibold px-3 py-1.5 tracking-wide">
+              18+
+            </div>
+              )}
+              {/* Galerie d'images */}
+              <ImageGallery images={images || []} productName={name} />
+              {/* Informations */}
+              <div className="flex flex-col justify-between px-0 md:px-8">
+                <div>
+                  <h1 className="text-5xl font-title font-bold text-brown mb-4 text-left tracking-tight">{name}</h1>
+                  <p className="text-4xl font-bold text-copper mb-8 text-left">{price.toFixed(2)} €</p>
+                  <div className="flex flex-row flex-wrap gap-4 mb-10 items-center justify-center">
+                    {brand && (
+                      <span className="flex items-center gap-2 bg-beige/80 border border-brown/20 text-brown font-sans px-4 py-1 rounded-xl text-sm font-medium">
+                        <span className="uppercase font-semibold">Marque</span>
+                        {brand.logo && (
+                          <span className="relative w-5 h-5">
+                            <NextImage src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${brand.logo.url}`} alt={brand.name} fill className="object-contain rounded-full" />
+                          </span>
+                        )}
+                        {brand.name}
+                      </span>
+                    )}
+                    {category && (
+                      <span className="bg-beige/80 border border-brown/20 text-brown font-sans px-4 py-1 rounded-xl text-sm font-medium">
+                        <span className="uppercase font-semibold">Catégorie</span> {category.name}
+                      </span>
+                    )}
+                    {subCategory && (
+                      <span className="bg-beige/60 border border-brown/10 text-brown font-sans px-4 py-1 rounded-xl text-sm font-medium">
+                        <span className="uppercase font-semibold">Sous-catégorie</span> {subCategory.name}
+                      </span>
+                    )}
+                  </div>
+                  <div className="prose prose-gray mb-8 font-paragraph text-lg">
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-line">{descriptionText}</p>
+                  </div>
                 </div>
               </div>
-            )}
-
-            <p className="text-3xl font-bold text-primary mb-6">
-              {price.toFixed(2)} €
-            </p>
-            {ageRestricted && (
-              <div className="mb-4 p-4 bg-orange-50 border-l-4 border-orange-500 text-orange-800">
-                <p className="font-semibold">⚠️ Produit interdit aux mineurs</p>
-                <p className="text-sm mt-1">
-                  Vous devez avoir plus de 18 ans pour acheter ce produit.
-                </p>
-              </div>
-            )}
-            <div className="prose prose-gray mb-8">
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                {descriptionText}
-              </p>
             </div>
-          </div>
-
-          <div className="space-y-4">
-            {isAdded && (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-center">
-                ✓ Produit ajouté au panier
-              </div>
-            )}
-            <Button onClick={handleAddToCart} fullWidth>
-              Ajouter au panier
-            </Button>
-            <Link href="/produits">
-              <Button variant="secondary" fullWidth>
-                ← Retour à la boutique
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+</div>
+  )
 }

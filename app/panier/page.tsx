@@ -52,11 +52,11 @@ export default function PanierPage() {
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-12">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
+      <div className="text-center py-16 max-w-2xl mx-auto">
+        <h1 className="text-3xl font-semibold text-primary mb-5 tracking-wide">
           Votre panier est vide
         </h1>
-        <p className="text-gray-600 mb-8">
+        <p className="text-text-secondary mb-10 leading-relaxed">
           Ajoutez des produits pour commencer vos achats
         </p>
         <Link href="/produits">
@@ -70,11 +70,11 @@ export default function PanierPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8">
+      <h1 className="text-4xl font-semibold text-primary mb-10 tracking-wide">
         Votre Panier
       </h1>
 
-      <div className="space-y-4 mb-8">
+      <div className="space-y-4 mb-10">
         {items.map((item) => (
           <CartItem
             key={item.id}
@@ -84,26 +84,26 @@ export default function PanierPage() {
         ))}
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-xl font-semibold text-gray-800">Total :</span>
-          <span className="text-3xl font-bold text-primary">
+      <div className="bg-background-card border border-accent/20 p-8">
+        <div className="flex justify-between items-center mb-6 pb-6 border-b border-accent/20">
+          <span className="text-lg font-medium text-text uppercase tracking-wide">Total</span>
+          <span className="text-3xl font-semibold text-accent">
             {totalPrice.toFixed(2)} €
           </span>
         </div>
 
         {/* Vérification d'âge si produits restreints */}
         {hasAgeRestrictedItems && (
-          <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+          <div className="mb-6 p-4 bg-orange-50 border border-orange-200">
             <div className="flex items-start gap-3">
               <input
                 type="checkbox"
                 id="age-confirmation"
                 checked={ageConfirmed}
                 onChange={(e) => setAgeConfirmed(e.target.checked)}
-                className="mt-1 h-5 w-5 text-primary focus:ring-primary border-gray-300 rounded"
+                className="mt-1 h-5 w-5 text-primary focus:ring-primary border-gray-300"
               />
-              <label htmlFor="age-confirmation" className="text-sm text-gray-700">
+              <label htmlFor="age-confirmation" className="text-sm text-gray-700 leading-relaxed">
                 <span className="font-semibold">⚠️ Produit(s) interdit(s) aux mineurs</span>
                 <br />
                 Je certifie avoir plus de 18 ans et être en droit d&apos;acheter ces produits.
@@ -112,9 +112,9 @@ export default function PanierPage() {
           </div>
         )}
         
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Button
-            variant="secondary"
+            variant="outline"
             onClick={clearCart}
             fullWidth
           >
@@ -125,12 +125,12 @@ export default function PanierPage() {
             disabled={isLoading || (hasAgeRestrictedItems && !ageConfirmed)}
             fullWidth
           >
-            {isLoading ? "Chargement..." : "Payer avec Stripe"}
+            {isLoading ? "Chargement..." : "Payer"}
           </Button>
         </div>
 
         {hasAgeRestrictedItems && !ageConfirmed && (
-          <p className="text-sm text-orange-600 mt-2 text-center">
+          <p className="text-sm text-orange-600 mt-4 text-center">
             Veuillez confirmer que vous avez plus de 18 ans pour continuer.
           </p>
         )}

@@ -6,12 +6,12 @@ export default async function ProduitsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-2">
+      <div className="mb-12 text-center">
+  <h1 className="text-4xl font-title font-semibold text-primary mb-4 tracking-wide">
           Notre Boutique
         </h1>
-        <p className="text-gray-600 text-lg">
-          Découvrez tous nos produits
+  <p className="text-text-secondary font-paragraph text-lg max-w-2xl mx-auto leading-relaxed">
+          Découvrez tous nos produits d'exception
         </p>
       </div>
       

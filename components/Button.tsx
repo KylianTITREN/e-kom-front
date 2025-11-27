@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "outline" | "danger";
   fullWidth?: boolean;
 }
 
@@ -13,12 +13,13 @@ export default function Button({
   className = "",
   ...props
 }: ButtonProps) {
-  const baseStyles = "px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "px-8 py-3 font-sans font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed tracking-wide text-sm uppercase";
   
   const variantStyles = {
-    primary: "bg-primary text-white hover:bg-opacity-90 active:scale-95",
-    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300 active:scale-95",
-    danger: "bg-red-600 text-white hover:bg-red-700 active:scale-95",
+    primary: "bg-primary text-background-light border border-primary hover:bg-primary-dark hover:border-primary-dark",
+    secondary: "bg-accent text-white border border-accent hover:bg-accent-dark hover:border-accent-dark",
+    outline: "bg-transparent text-primary border border-primary hover:bg-primary hover:text-background-light",
+    danger: "bg-red-600 text-white border border-red-600 hover:bg-red-700 hover:border-red-700",
   };
 
   const widthStyle = fullWidth ? "w-full" : "";

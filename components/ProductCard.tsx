@@ -35,48 +35,59 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="group bg-background-card border border-accent/10 overflow-hidden hover:border-accent/30 transition-all duration-300">
       <Link href={`/produit/${productUrl}`}>
-        <div className="relative h-64 w-full bg-gray-100">
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
+        <div className="relative h-80 w-full bg-background overflow-hidden">
+          {firstImage ? (
+            <Image
+              src={imageUrl}
+              alt={name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-beige/60">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="16" width="48" height="32" rx="6" fill="#C7B299" stroke="#8B6F4E" strokeWidth="2"/>
+                <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
+              </svg>
+              <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
+            </div>
+          )}
           {ageRestricted && (
-            <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+            <div className="absolute top-3 right-3 bg-primary text-background-light text-xs font-semibold px-3 py-1.5 tracking-wide">
               18+
             </div>
           )}
         </div>
       </Link>
-      <div className="p-4">
+      <div className="p-6">
         {/* Marque et Catégorie */}
         {(brand || category) && (
-          <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
+          <div className="flex items-center gap-2 mb-3 text-xs text-text-muted tracking-wide">
             {brand && (
-              <span className="bg-gray-100 px-2 py-1 rounded-md font-medium">
+              <span className="font-medium uppercase">
                 {brand.name}
               </span>
             )}
-            {category && (
-              <span className="text-gray-400">•</span>
+            {brand && category && (
+              <span className="text-accent">•</span>
             )}
             {category && (
-              <span>{category.name}</span>
+              <span className="uppercase">{category.name}</span>
             )}
           </div>
         )}
         
         <Link href={`/produit/${productUrl}`}>
-          <h3 className="text-lg font-semibold text-gray-800 hover:text-primary transition-colors mb-2">
+          <h3 className="text-lg font-medium text-primary group-hover:text-accent transition-colors mb-3 leading-tight">
             {name}
           </h3>
         </Link>
-        <p className="text-xl font-bold text-primary mb-4">{price.toFixed(2)} €</p>
-        <Button onClick={handleAddToCart} fullWidth>
+        <p className="text-xl font-semibold text-accent mb-5">{price.toFixed(2)} €</p>
+        <Button onClick={handleAddToCart} variant="outline" fullWidth>
           Ajouter au panier
         </Button>
       </div>

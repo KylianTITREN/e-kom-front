@@ -9,7 +9,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#0f172a",
+        // Palette inspirée de Capuchadou
+        primary: {
+          DEFAULT: "#3d2817", // Marron foncé principal
+          dark: "#2a1a0f",
+          light: "#5a3d28",
+        },
+        accent: {
+          DEFAULT: "#b8906b", // Cuivre/doré
+          light: "#d4b896",
+          dark: "#9a7555",
+        },
+        background: {
+          DEFAULT: "#ffffff", // Blanc
+          light: "#fafafa", // Gris très clair
+          card: "#ffffff",
+        },
+        text: {
+          DEFAULT: "#3d2817",
+          secondary: "#6b5d4f",
+          muted: "#9a8a7a",
+        },
+      },
+      fontFamily: {
+    title: ["Cormorant Garamond", "serif"],
+    sans: ["Montserrat", "ui-sans-serif", "system-ui"],
+    paragraph: ["Montserrat", "ui-sans-serif", "system-ui"],
       },
     },
   },

@@ -23,18 +23,18 @@ export default async function NewsDetailPage({
     : "/placeholder.jpg";
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="max-w-4xl mx-auto">
       <Link
         href="/actualites"
-        className="text-primary hover:underline mb-4 inline-block"
+        className="text-accent hover:text-accent-dark transition-colors mb-8 inline-block text-sm uppercase tracking-wide"
       >
         ← Retour aux actualités
       </Link>
 
       <article>
-        <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
+  <h1 className="text-4xl font-title font-semibold text-primary mb-4 tracking-wide">{article.title}</h1>
         
-        <time className="text-gray-500 mb-6 block">
+        <time className="text-text-muted text-sm uppercase tracking-wide mb-8 block">
           {new Date(article.publishedDate).toLocaleDateString("fr-FR", {
             year: "numeric",
             month: "long",
@@ -42,46 +42,32 @@ export default async function NewsDetailPage({
           })}
         </time>
 
-        {article.image && (
-          <div className="relative h-96 w-full mb-8 rounded-lg overflow-hidden">
+        <div className="relative h-96 w-full mb-10 overflow-hidden border border-accent/10">
+          {article.image ? (
             <Image
               src={imageUrl}
               alt={article.title}
               fill
               className="object-cover"
             />
-          </div>
-        )}
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-beige/60">
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="16" width="48" height="32" rx="6" fill="#C7B299" stroke="#8B6F4E" strokeWidth="2"/>
+                <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
+              </svg>
+              <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
+            </div>
+          )}
+        </div>
 
-        <div className="prose prose-lg max-w-none">
-          <div className="text-xl text-gray-700 mb-6 font-medium">
+        <div className="prose max-w-none">
+          <div className="text-xl text-text-secondary mb-8 leading-relaxed font-light">
             {article.excerpt}
           </div>
-          <div className="mt-6 prose prose-lg max-w-none">
-            <ReactMarkdown
-              components={{
-                h1: ({ children }) => <h1 className="text-3xl font-bold mb-6 mt-8">{children}</h1>,
-                h2: ({ children }) => <h2 className="text-2xl font-bold mb-4 mt-6">{children}</h2>,
-                h3: ({ children }) => <h3 className="text-xl font-bold mb-3 mt-5">{children}</h3>,
-                p: ({ children }) => <p className="mb-4 text-gray-800 leading-relaxed">{children}</p>,
-                ul: ({ children }) => <ul className="list-disc list-inside mb-4 ml-4">{children}</ul>,
-                ol: ({ children }) => <ol className="list-decimal list-inside mb-4 ml-4">{children}</ol>,
-                li: ({ children }) => <li className="mb-2">{children}</li>,
-                strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-                em: ({ children }) => <em className="italic">{children}</em>,
-                blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-gray-700">
-                    {children}
-                  </blockquote>
-                ),
-                code: ({ children }) => (
-                  <code className="bg-gray-100 px-2 py-1 rounded text-sm">{children}</code>
-                ),
-                pre: ({ children }) => (
-                  <pre className="bg-gray-100 p-4 rounded-lg mb-4 overflow-x-auto">{children}</pre>
-                ),
-              }}
-            >
+          <div className="mt-8">
+            <ReactMarkdown>
               {typeof article.content === 'string' ? article.content : ''}
             </ReactMarkdown>
           </div>

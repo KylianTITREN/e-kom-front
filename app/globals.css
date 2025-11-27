@@ -1,3 +1,98 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Styles pour le contenu Markdown */
+@layer base {
+  .prose {
+    @apply text-text leading-relaxed;
+  }
+
+  .prose h1 {
+    @apply text-4xl font-title font-semibold text-primary mb-6 mt-8 tracking-wide;
+  }
+
+  .prose h2 {
+    @apply text-3xl font-sans font-semibold text-primary mb-5 mt-8 tracking-wide;
+  }
+
+  .prose h3 {
+    @apply text-2xl font-sans font-medium text-primary mb-4 mt-6 tracking-wide;
+  }
+
+  .prose h4 {
+    @apply text-xl font-sans font-medium text-primary mb-3 mt-5;
+  }
+
+  .prose h5 {
+    @apply text-lg font-sans font-medium text-primary mb-2 mt-4;
+  }
+
+  .prose h6 {
+    @apply text-base font-sans font-medium text-primary mb-2 mt-3;
+  }
+
+  .prose p {
+    @apply font-paragraph mb-4 text-text-secondary leading-relaxed;
+  }
+
+  .prose a {
+    @apply text-accent hover:text-accent-dark underline transition-colors;
+  }
+
+  .prose strong {
+    @apply font-semibold text-primary;
+  }
+
+  .prose em {
+    @apply italic;
+  }
+
+  .prose ul {
+    @apply list-disc list-inside mb-4 space-y-2 text-text-secondary;
+  }
+
+  .prose ol {
+    @apply list-decimal list-inside mb-4 space-y-2 text-text-secondary;
+  }
+
+  .prose li {
+    @apply leading-relaxed;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-accent pl-4 italic text-text-secondary my-6;
+  }
+
+  .prose code {
+    @apply bg-background px-2 py-1 text-sm font-mono text-primary;
+  }
+
+  .prose pre {
+    @apply bg-primary text-background-light p-4 overflow-x-auto my-6;
+  }
+
+  .prose pre code {
+    @apply bg-transparent px-0 py-0;
+  }
+
+  .prose hr {
+    @apply border-accent/20 my-8;
+  }
+
+  .prose table {
+    @apply w-full border-collapse my-6;
+  }
+
+  .prose th {
+    @apply border border-accent/20 bg-accent/5 px-4 py-2 text-left font-semibold text-primary;
+  }
+
+  .prose td {
+    @apply border border-accent/20 px-4 py-2 text-text-secondary;
+  }
+
+  .prose img {
+    @apply my-6 max-w-full h-auto;
+  }
+}
