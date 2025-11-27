@@ -132,14 +132,32 @@ export interface HomepageContent {
   welcomeText: RichTextBlock[] | string;
   featuredSectionTitle: string;
   newsSectionTitle: string;
-  merchant?: {
-    id: number;
-    documentId: string;
-    name: string;
-  };
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
+}
+
+export interface Settings {
+  id: number;
+  documentId: string;
+  siteName: string;
+  siteEmail: string;
+  contactPhone?: string;
+  logo?: StrapiImage;
+  favicon?: StrapiImage;
+  stripePublicKey: string;
+  address?: string;
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    linkedin?: string;
+  };
+  seoTitle?: string;
+  seoDescription?: string;
+  googleAnalyticsId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface StrapiResponse<T> {
