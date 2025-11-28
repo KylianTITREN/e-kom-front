@@ -180,7 +180,7 @@ export async function getHomepageContent(): Promise<HomepageContent | null> {
 // Récupérer les paramètres du site
 export async function getSettings(): Promise<Settings | null> {
   try {
-    const url = `${STRAPI_URL}/api/setting?populate=logo,favicon`;
+    const url = `${STRAPI_URL}/api/setting?populate=*`;
     const res = await fetch(url, { cache: "no-store" });
     
     if (!res.ok) {

@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { getSettings } from "@/lib/api";
 import { CartProvider } from "@/context/CartContext";
 
 const cormorant = Cormorant_Garamond({
@@ -22,20 +23,21 @@ export const metadata: Metadata = {
   description: "Votre boutique e-commerce en marque blanche",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSettings();
   return (
     <html lang="fr" className={`${cormorant.variable} ${montserrat.variable}`}> 
       <body className="font-sans flex flex-col min-h-screen bg-white text-text">
         <CartProvider>
-          <Header />
+          <Header settings={settings} />
           <main className="flex-grow container mx-auto px-4 py-8">
             {children}
           </main>
-          <Footer />
+          <Footer settings={settings} />
         </CartProvider>
       </body>
     </html>

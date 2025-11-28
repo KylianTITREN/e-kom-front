@@ -1,7 +1,15 @@
 import Link from "next/link";
+import { Settings } from "@/types";
+import { headers } from "next/headers";
 
-export default function Footer() {
+type FooterProps = {
+  settings: Settings | null;
+};
+
+export default async function Footer({ settings }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const headersList = await headers()
+  const host = headersList.get('X-Forwarded-Host') ?? 'e-kom'
 
   return (
     <footer className="bg-primary text-background-light mt-auto border-t border-accent/20">
@@ -9,9 +17,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
           {/* À propos */}
           <div>
-            <h3 className="font-title font-semibold text-lg mb-5 tracking-wide">e-kom</h3>
+            <h3 className="font-title font-semibold text-lg mb-5 tracking-wide">{settings?.siteName || "e-kom"}</h3>
             <p className="font-paragraph text-sm text-background leading-relaxed">
-              Votre boutique en ligne de confiance pour des produits d'exception
+              {settings?.seoDescription || "Votre boutique en ligne de confiance pour des produits d'exception"}
             </p>
           </div>
 
@@ -73,8 +81,9 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-sm mb-5 tracking-wide uppercase text-accent">Contact</h3>
             <div className="space-y-3 text-sm text-background">
-              <p>Email : contact@e-kom.fr</p>
-              <p>Tél : +33 1 23 45 67 89</p>
+              {settings?.siteEmail && <p>Email : {settings.siteEmail}</p>}
+              {settings?.contactPhone && <p>Tél : {settings.contactPhone}</p>}
+              {settings?.address && <p>Adresse : {settings.address}</p>}
             </div>
           </div>
         </div>
@@ -82,7 +91,7 @@ export default function Footer() {
         <div className="border-t border-accent/20 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-background">
-              &copy; {currentYear} e-kom. Tous droits réservés.
+              &copy; {currentYear} {host}. Tous droits réservés.
             </p>
             <div className="flex gap-6">
             </div>
