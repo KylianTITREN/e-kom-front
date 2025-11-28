@@ -40,7 +40,7 @@ export default function ContactPage() {
           Contactez-nous
         </h1>
         <p className="text-text-secondary text-lg leading-relaxed">
-          Une question ? N'hésitez pas à nous écrire
+          Une question ? N&apos;hésitez pas à nous écrire
         </p>
       </div>
 

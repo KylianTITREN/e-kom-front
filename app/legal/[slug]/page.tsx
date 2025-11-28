@@ -26,14 +26,14 @@ export default async function LegalPage({
         <ReactMarkdown 
           remarkPlugins={[remarkGfm]}
           components={{
-            h2: ({node, ...props}) => <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4" {...props} />,
-            h3: ({node, ...props}) => <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3" {...props} />,
-            p: ({node, ...props}) => <p className="mb-4 text-gray-700 leading-7" {...props} />,
-            a: ({node, ...props}) => <a className="text-primary underline hover:text-primary/80" {...props} />,
-            strong: ({node, ...props}) => <strong className="font-semibold text-gray-900" {...props} />,
-            ul: ({node, ...props}) => <ul className="list-disc list-inside space-y-2 mb-4 ml-4" {...props} />,
-            ol: ({node, ...props}) => <ol className="list-decimal list-inside space-y-2 mb-4 ml-4" {...props} />,
-            li: ({node, ...props}) => <li className="text-gray-700" {...props} />,
+            h2: ({...props}) => <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4" {...props} />,
+            h3: ({...props}) => <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3" {...props} />,
+            p: ({...props}) => <p className="mb-4 text-gray-700 leading-7" {...props} />,
+            a: ({...props}) => <a className="text-primary underline hover:text-primary/80" {...props} />,
+            strong: ({...props}) => <strong className="font-semibold text-gray-900" {...props} />,
+            ul: ({...props}) => <ul className="list-disc list-inside space-y-2 mb-4 ml-4" {...props} />,
+            ol: ({...props}) => <ol className="list-decimal list-inside space-y-2 mb-4 ml-4" {...props} />,
+            li: ({...props}) => <li className="text-gray-700" {...props} />,
           }}
         >
           {content}

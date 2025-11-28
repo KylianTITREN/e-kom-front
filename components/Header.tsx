@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
 import { Settings } from "@/types";
+import Image from "next/image";
 
 type HeaderProps = {
   settings: Settings | null;
@@ -23,7 +24,7 @@ export default function Header({ settings }: HeaderProps) {
             className="text-2xl font-title font-semibold text-primary tracking-wide hover:text-accent transition-colors flex items-center gap-2"
           >
             {settings?.logo?.url && (
-              <img src={settings.logo.url} alt={settings.siteName} className="h-8 w-auto" />
+              <Image src={settings.logo.url} alt={settings.siteName} className="h-8 w-auto" />
             )}
             {settings?.siteName || "e-kom"}
           </Link>

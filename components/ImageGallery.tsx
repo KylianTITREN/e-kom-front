@@ -25,9 +25,6 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
 
   const currentImage = images[selectedImage];
   const mainImageUrl = `${STRAPI_URL}${currentImage.url}`;
-  const thumbnailUrl = currentImage.formats?.thumbnail?.url
-    ? `${STRAPI_URL}${currentImage.formats.thumbnail.url}`
-    : mainImageUrl;
 
   return (
     <>

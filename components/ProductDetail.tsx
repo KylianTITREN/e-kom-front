@@ -2,41 +2,19 @@
 
 import Link from "next/link";
 import NextImage from "next/image";
-import { useCart } from "@/context/CartContext";
 import ImageGallery from "@/components/ImageGallery";
 import { Product } from "@/types";
 import { richTextToString } from "@/lib/api";
-import { useState } from "react";
 
 interface ProductDetailProps {
   product: Product;
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
-  const { addItem } = useCart();
-  const [isAdded, setIsAdded] = useState(false);
   const { name, description, price, images, ageRestricted, brand, category, subCategory } = product;
 
   // Convertir la description RichText en string
   const descriptionText = richTextToString(description);
-
-  // Image pour le panier (première image)
-  const firstImage = images && images.length > 0 ? images[0] : null;
-  const cartImageUrl = firstImage
-    ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${firstImage.formats?.small?.url || firstImage.url}`
-    : "/placeholder.jpg";
-
-  const handleAddToCart = () => {
-    addItem({
-      id: product.id.toString(),
-      name: name,
-      price,
-      image: cartImageUrl,
-      ageRestricted,
-    });
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 2000);
-  };
 
         return (
           <div className="max-w-6xl mx-auto">

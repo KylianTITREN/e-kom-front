@@ -11,7 +11,7 @@ export default async function ProduitsPage() {
           Notre Boutique
         </h1>
   <p className="text-text-secondary font-paragraph text-lg max-w-2xl mx-auto leading-relaxed">
-          Découvrez tous nos produits d'exception
+          Découvrez tous nos produits d&apos;exception
         </p>
       </div>
       

@@ -47,7 +47,7 @@ export default function SuccessPage() {
           </Link>
           <Link href="/">
             <Button variant="secondary" fullWidth>
-              Retour à l'accueil
+              Retour à l&apos;accueil
             </Button>
           </Link>
         </div>
