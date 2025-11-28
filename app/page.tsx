@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { getFeaturedProducts, getNews, getHomepageContent } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
