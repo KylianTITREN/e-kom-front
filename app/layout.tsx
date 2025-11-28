@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getSettings } from "@/lib/api";
 import { CartProvider } from "@/context/CartContext";
+import { Analytics } from "@vercel/analytics/next";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default async function RootLayout({
           </main>
           <Footer settings={settings} />
         </CartProvider>
+        <Analytics/>
       </body>
     </html>
   );
