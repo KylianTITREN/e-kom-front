@@ -46,7 +46,7 @@ export default async function HomePage() {
           {content.welcomeTitle}
         </h2>
         <div className="text-text-secondary text-lg leading-relaxed prose prose-lg prose-headings:font-title prose-headings:text-primary prose-p:font-paragraph">
-          <ReactMarkdown>{content.welcomeText}</ReactMarkdown>
+          <ReactMarkdown>{typeof content.welcomeText === 'string' ? content.welcomeText : ''}</ReactMarkdown>
         </div>
       </section>
 
