@@ -20,8 +20,16 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   const baseTitle = process.env.SEO_SITE_NAME;
+  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
   const title = `${product.name} – ${baseTitle}`;
+
+  // Description dynamique basée sur le produit
+  const description = product.description
+    ? (typeof product.description === 'string'
+        ? product.description.slice(0, 160)
+        : product.description.map(block => block.children.map(child => child.text).join("")).join(" ").slice(0, 160))
+    : process.env.SEO_PRODUCT_DESCRIPTION;
 
   const keywords = [
     product.name,
@@ -31,10 +39,27 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     .filter(Boolean)
     .join(", ") + ", " + process.env.SEO_PRODUCT_KEYWORDS;
 
+  // Image pour Open Graph
+  const imageUrl = product.images?.[0]?.url
+    ? `${STRAPI_URL}${product.images[0].url}`
+    : undefined;
+
   return {
     title,
-    description: process.env.SEO_PRODUCT_DESCRIPTION,
+    description,
     keywords,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: imageUrl ? [{ url: imageUrl, alt: product.name }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : [],
+    },
   };
 }
 

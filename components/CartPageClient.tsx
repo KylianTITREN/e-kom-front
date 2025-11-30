@@ -4,13 +4,9 @@ import { useCart } from "@/context/CartContext";
 import CartItem from "@/components/CartItem";
 import Button from "@/components/Button";
 import Link from "next/link";
-import { loadStripe } from "@stripe/stripe-js";
+import { getStripe } from "@/lib/stripeClient";
 import { createCheckoutSession } from "@/lib/stripe";
 import { useState } from "react";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
-);
 
 export default function CartPageClient() {
   const { items, removeItem, totalPrice, clearCart, hasAgeRestrictedItems } = useCart();
@@ -29,7 +25,7 @@ export default function CartPageClient() {
         return;
       }
 
-      const stripe = await stripePromise;
+      const stripe = await getStripe();
       if (!stripe) {
         alert("Erreur de chargement de Stripe");
         setIsLoading(false);

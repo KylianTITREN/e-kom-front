@@ -37,7 +37,6 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
       <div className="flex-grow">
         <h3 className="font-medium text-primary mb-2 text-lg">{item.name}</h3>
         <p className="text-accent font-semibold text-lg">{item.price.toFixed(2)} €</p>
-        <p className="text-sm text-text-muted mt-2 uppercase tracking-wide">Quantité : {item.quantity}</p>
       </div>
 
       {/* Prix & Supprimer */}

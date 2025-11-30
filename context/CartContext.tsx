@@ -32,12 +32,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addItem = (newItem: Omit<CartItem, "quantity">) => {
     setItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === newItem.id);
-      
+
       if (existingItem) {
-        // Limiter à 1 produit par ID - ne pas augmenter la quantité
+        // Limiter à 1 produit max par type - ne pas ajouter si déjà présent
         return currentItems;
       }
-      
+
       return [...currentItems, { ...newItem, quantity: 1 }];
     });
   };

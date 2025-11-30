@@ -25,16 +25,41 @@ export async function generateMetadata({ params }: {
 
   const title = `${article.title} – ${baseTitle}`;
 
+  // Description dynamique basée sur l'extrait ou le contenu
+  const description = article.excerpt
+    ? article.excerpt.slice(0, 160)
+    : (typeof article.content === 'string'
+        ? article.content.slice(0, 160)
+        : process.env.SEO_NEWS_DESCRIPTION);
+
   const keywords = [
     article.title
   ]
     .filter(Boolean)
     .join(", ") + ", " + process.env.SEO_NEWS_KEYWORDS;
 
+  // Image pour Open Graph
+  const imageUrl = article.image?.url
+    ? `${STRAPI_URL}${article.image.url}`
+    : undefined;
+
   return {
     title,
-    description: process.env.SEO_NEWS_DESCRIPTION,
+    description,
     keywords,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      publishedTime: article.publishedDate,
+      images: imageUrl ? [{ url: imageUrl, alt: article.title }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : [],
+    },
   };
 }
 

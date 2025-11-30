@@ -16,7 +16,7 @@ export async function getProducts(): Promise<Product[]> {
   try {
     const url = `${STRAPI_URL}/api/products?populate[images]=true&populate[category]=true&populate[subCategory]=true&populate[brand][populate][logo]=true`;
 
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { next: { revalidate: 7200 } }); // Cache 2h
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -38,7 +38,7 @@ export async function getProductBySlug(slugOrId: string): Promise<Product | null
     // Filtrage par slug
     let res = await fetch(
       `${STRAPI_URL}/api/products?filters[slug][$eq]=${slugOrId}&populate[0]=images&populate[1]=category&populate[2]=subCategory&populate[3]=brand&populate[4]=brand.logo`,
-      { cache: "no-store" }
+      { next: { revalidate: 7200 } } // Cache 2h
     );
 
     if (!res.ok) {
@@ -53,7 +53,7 @@ export async function getProductBySlug(slugOrId: string): Promise<Product | null
     if (!data.data || data.data.length === 0) {
       res = await fetch(
         `${STRAPI_URL}/api/products?filters[documentId][$eq]=${slugOrId}&populate[images]=true&populate[category]=true&populate[subCategory]=true&populate[brand][populate][logo]=true`,
-        { cache: "no-store" }
+        { next: { revalidate: 7200 } } // Cache 2h
       );
       
       if (!res.ok) {
@@ -76,8 +76,8 @@ export async function getProductBySlug(slugOrId: string): Promise<Product | null
 export async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const url = `${STRAPI_URL}/api/products?populate=*&pagination[limit]=6`;
-    
-    const res = await fetch(url, { cache: "no-store" });
+
+    const res = await fetch(url, { next: { revalidate: 3600 } }); // Cache 1h
 
     if (!res.ok) throw new Error("Erreur lors de la récupération des produits phares");
 
@@ -94,8 +94,8 @@ export async function getNews(limit?: number): Promise<News[]> {
   try {
     const limitParam = limit ? `&pagination[limit]=${limit}` : '';
     const url = `${STRAPI_URL}/api/news-articles?populate=*&sort=publishedDate:desc${limitParam}`;
-    
-    const res = await fetch(url, { cache: "no-store" });
+
+    const res = await fetch(url, { next: { revalidate: 1800 } }); // Cache 30min
     if (!res.ok) throw new Error("Erreur lors de la récupération des actualités");
 
     const data: StrapiResponse<News[]> = await res.json();
@@ -110,7 +110,7 @@ export async function getNews(limit?: number): Promise<News[]> {
 export async function getNewsBySlug(slug: string): Promise<News | null> {
   try {
     const url = `${STRAPI_URL}/api/news-articles?filters[slug][$eq]=${slug}&populate=*`;
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { next: { revalidate: 1800 } }); // Cache 30min
     
     if (!res.ok) throw new Error("Erreur lors de la récupération de l'actualité");
 
@@ -126,7 +126,7 @@ export async function getNewsBySlug(slug: string): Promise<News | null> {
 export async function getLegalPages(): Promise<LegalPage[]> {
   try {
     const url = `${STRAPI_URL}/api/legal-pages?sort=order:asc`;
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { next: { revalidate: 86400 } }); // Cache 24h
     
     if (!res.ok) throw new Error("Erreur lors de la récupération des pages légales");
 
@@ -142,7 +142,7 @@ export async function getLegalPages(): Promise<LegalPage[]> {
 export async function getLegalPageBySlug(slug: string): Promise<LegalPage | null> {
   try {
     const url = `${STRAPI_URL}/api/legal-pages?filters[slug][$eq]=${slug}`;
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { next: { revalidate: 86400 } }); // Cache 24h
     
     if (!res.ok) {
       console.error("Erreur API legal page:", res.status, res.statusText);
@@ -161,7 +161,7 @@ export async function getLegalPageBySlug(slug: string): Promise<LegalPage | null
 export async function getHomepageContent(): Promise<HomepageContent | null> {
   try {
     const url = `${STRAPI_URL}/api/homepage-content?populate=*`;
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { next: { revalidate: 3600 } }); // Cache 1h
     
     if (!res.ok) {
       console.error("Erreur API homepage-content:", res.status, res.statusText);
@@ -181,7 +181,7 @@ export async function getHomepageContent(): Promise<HomepageContent | null> {
 export async function getSettings(): Promise<Settings | null> {
   try {
     const url = `${STRAPI_URL}/api/setting?populate=*`;
-    const res = await fetch(url, { cache: "no-store" });
+    const res = await fetch(url, { next: { revalidate: 86400 } }); // Cache 24h
     
     if (!res.ok) {
       console.error("Erreur API settings:", res.status, res.statusText);
