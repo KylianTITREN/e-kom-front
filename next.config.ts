@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
         hostname: "api.coutellerie-passion.fr",
         pathname: "/uploads/**",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/dnguzthqa/**",
+      },
     ],
   },
 };
