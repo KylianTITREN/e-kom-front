@@ -19,7 +19,7 @@ export default async function Footer({ settings }: FooterProps) {
           <div>
             <h3 className="font-title font-semibold text-lg mb-5 tracking-wide">{settings?.siteName || "e-kom"}</h3>
             <p className="font-paragraph text-sm text-background leading-relaxed">
-              Votre boutique en ligne de confiance pour des produits d'exception
+              Votre boutique en ligne de confiance pour des produits d&apos;exception
             </p>
           </div>
 

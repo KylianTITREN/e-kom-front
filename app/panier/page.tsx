@@ -8,8 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function CartPage() {
-  const stripePublishableKey =
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
-
-  return <CartPageClient stripePublishableKey={stripePublishableKey} />;
+  return <CartPageClient />;
 }

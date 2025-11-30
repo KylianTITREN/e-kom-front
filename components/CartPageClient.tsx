@@ -12,12 +12,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
-type CartPageClientProps = {
-  stripePublishableKey: string;
-};
-
-export default function CartPageClient({ stripePublishableKey }: CartPageClientProps) {
-  const stripe = loadStripe(stripePublishableKey);
+export default function CartPageClient() {
   const { items, removeItem, totalPrice, clearCart, hasAgeRestrictedItems } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
