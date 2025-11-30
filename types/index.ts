@@ -114,6 +114,9 @@ export interface LegalPage {
   id: number;
   documentId: string;
   title: string;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
   slug: string;
   content: RichTextBlock[] | string;
   order: number;
@@ -129,6 +132,9 @@ export interface HomepageContent {
   heroSubtitle: string;
   heroButtonText: string;
   welcomeTitle: string;
+  seoTitle: string;
+  seoDescription: string;
+  seoKeywords: string;
   welcomeText: RichTextBlock[] | string;
   featuredSectionTitle: string;
   newsSectionTitle: string;
@@ -153,8 +159,6 @@ export interface Settings {
     twitter?: string;
     linkedin?: string;
   };
-  seoTitle?: string;
-  seoDescription?: string;
   googleAnalyticsId?: string;
   createdAt: string;
   updatedAt: string;

@@ -1,7 +1,32 @@
 import { getLegalPageBySlug } from "@/lib/api";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const page = await getLegalPageBySlug(slug);
+
+  if (!page) {
+    return {
+      title: `Page introuvable | ${process.env.SEO_SITE_NAME}`,
+      description: process.env.SEO_LEGAL_GENERIC_DESCRIPTION,
+      keywords: process.env.SEO_LEGAL_GENERIC_KEYWORDS,
+    };
+  }
+
+  return {
+    title: page.seoTitle || `${page.title} – ${process.env.SEO_SITE_NAME}`,
+    description: page.seoDescription || process.env.SEO_LEGAL_DESCRIPTION,
+    keywords: page.seoKeywords || process.env.SEO_LEGAL_KEYWORDS,
+  };
+}
+
 
 export default async function LegalPage({
   params,

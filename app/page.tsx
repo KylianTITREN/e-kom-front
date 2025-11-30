@@ -1,12 +1,35 @@
-export const dynamic = 'force-dynamic';
 import Link from "next/link";
 import { getFeaturedProducts, getNews, getHomepageContent } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
 import Button from "@/components/Button";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import { Metadata } from "next";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const page = await getHomepageContent();
+
+  if (!page) {
+    return {
+      title: `Page introuvable | ${process.env.SEO_SITE_NAME}`,
+      description: process.env.SEO_LEGAL_GENERIC_DESCRIPTION,
+      keywords: process.env.SEO_LEGAL_GENERIC_KEYWORDS,
+    };
+  }
+
+  return {
+    title: page.seoTitle || `${page.heroTitle} – ${process.env.SEO_SITE_NAME}`,
+    description: page.seoDescription || process.env.SEO_LEGAL_DESCRIPTION,
+    keywords: page.seoKeywords || process.env.SEO_LEGAL_KEYWORDS,
+  };
+}
 
 export default async function HomePage() {
   const featuredProducts = await getFeaturedProducts();

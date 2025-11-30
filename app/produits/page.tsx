@@ -1,6 +1,12 @@
-export const dynamic = 'force-dynamic';
 import { getProducts } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: process.env.SEO_SHOP_TITLE,
+  description: process.env.SEO_SHOP_DESCRIPTION,
+  keywords: process.env.SEO_SHOP_KEYWORDS
+};
 
 export default async function ProduitsPage() {
   const products = await getProducts();

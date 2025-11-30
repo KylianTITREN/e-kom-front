@@ -1,9 +1,15 @@
-export const dynamic = 'force-dynamic';
 import { getNews } from "@/lib/api";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+
+export const metadata: Metadata = {
+  title: process.env.SEO_NEWS_LIST_TITLE,
+  description: process.env.SEO_NEWS_LIST_DESCRIPTION,
+  keywords: process.env.SEO_NEWS_LIST_KEYWORDS
+};
 
 export default async function ActualitesPage() {
   const news = await getNews();

@@ -3,8 +3,40 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { Metadata } from "next";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+
+export async function generateMetadata({ params }: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getNewsBySlug(slug);
+
+  if (!article) {
+    return {
+      title: `Article introuvable | ${process.env.SEO_SITE_NAME}`,
+      description: process.env.SEO_NEWS_DESCRIPTION,
+      keywords: process.env.SEO_NEWS_KEYWORDS,
+    };
+  }
+
+  const baseTitle = process.env.SEO_SITE_NAME;
+
+  const title = `${article.title} – ${baseTitle}`;
+
+  const keywords = [
+    article.title
+  ]
+    .filter(Boolean)
+    .join(", ") + ", " + process.env.SEO_NEWS_KEYWORDS;
+
+  return {
+    title,
+    description: process.env.SEO_NEWS_DESCRIPTION,
+    keywords,
+  };
+}
 
 export default async function NewsDetailPage({
   params,

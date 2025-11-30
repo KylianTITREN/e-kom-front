@@ -20,8 +20,10 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "e-kom - Boutique en ligne",
-  description: "Votre boutique e-commerce en marque blanche",
+  title: process.env.SEO_HOME_TITLE,
+  description: process.env.SEO_HOME_DESCRIPTION,
+  icons: process.env.SEO_HOME_ICON,
+  keywords: process.env.SEO_HOME_KEYWORDS,
 };
 
 export default async function RootLayout({
