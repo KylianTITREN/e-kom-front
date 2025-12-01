@@ -6,8 +6,6 @@ import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { Metadata } from "next";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getHomepageContent();
 
@@ -96,7 +94,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {latestNews.map((article) => {
               const imageUrl = article.image?.url
-                ? `${STRAPI_URL}${article.image.url}`
+                ? `${article.image.url}`
                 : "/placeholder.jpg";
 
               return (

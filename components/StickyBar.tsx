@@ -16,7 +16,7 @@ export default function StickyBar({ product }: StickyBarProps) {
   // Image pour le panier (première image)
   const firstImage = images && images.length > 0 ? images[0] : null;
   const cartImageUrl = firstImage
-    ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${firstImage.formats?.small?.url || firstImage.url}`
+    ? `${firstImage.formats?.small?.url || firstImage.url}`
     : "/placeholder.jpg";
 
   const handleAddToCart = () => {

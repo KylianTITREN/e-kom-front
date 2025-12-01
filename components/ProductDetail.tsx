@@ -46,7 +46,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                         <span className="uppercase font-semibold">Marque</span>
                         {brand.logo && (
                           <span className="relative w-5 h-5">
-                            <NextImage src={`${process.env.NEXT_PUBLIC_STRAPI_URL}${brand.logo.url}`} alt={brand.name} fill className="object-contain rounded-full" />
+                            <NextImage src={`${brand.logo.url}`} alt={brand.name} fill className="object-contain rounded-full" />
                           </span>
                         )}
                         {brand.name}

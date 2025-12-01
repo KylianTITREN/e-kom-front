@@ -3,8 +3,6 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
 export const metadata: Metadata = {
   title: process.env.SEO_NEWS_LIST_TITLE,
   description: process.env.SEO_NEWS_LIST_DESCRIPTION,
@@ -31,7 +29,7 @@ export default async function ActualitesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {news.map((article) => {
             const imageUrl = article.image?.url
-              ? `${STRAPI_URL}${article.image.url}`
+              ? `${article.image.url}`
               : "/placeholder.jpg";
 
             return (

@@ -25,7 +25,7 @@ export default function Header({ settings }: HeaderProps) {
           >
             {settings?.logo?.url && (
               <Image
-                src={`${process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'}${settings.logo.url}`}
+                src={`${settings.logo.url}`}
                 alt={settings.siteName}
                 width={settings.logo.width || 32}
                 height={settings.logo.height || 32}

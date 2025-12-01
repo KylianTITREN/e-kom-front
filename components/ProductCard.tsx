@@ -17,7 +17,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   // Utiliser la première image ou un placeholder
   const firstImage = images && images.length > 0 ? images[0] : null;
   const imageUrl = firstImage
-    ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${firstImage.formats?.medium?.url || firstImage.url}`
+    ? `${firstImage.formats?.medium?.url || firstImage.url}`
     : "/placeholder.jpg";
 
   // Utiliser le slug s'il existe, sinon le documentId

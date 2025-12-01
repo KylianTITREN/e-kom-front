@@ -20,7 +20,6 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 
   const baseTitle = process.env.SEO_SITE_NAME;
-  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
   const title = `${product.name} – ${baseTitle}`;
 
@@ -41,7 +40,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
   // Image pour Open Graph
   const imageUrl = product.images?.[0]?.url
-    ? `${STRAPI_URL}${product.images[0].url}`
+    ? `${product.images[0].url}`
     : undefined;
 
   return {

@@ -5,8 +5,6 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Metadata } from "next";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
 export async function generateMetadata({ params }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
@@ -40,7 +38,7 @@ export async function generateMetadata({ params }: {
 
   // Image pour Open Graph
   const imageUrl = article.image?.url
-    ? `${STRAPI_URL}${article.image.url}`
+    ? `${article.image.url}`
     : undefined;
 
   return {
@@ -76,7 +74,7 @@ export default async function NewsDetailPage({
   }
 
   const imageUrl = article.image?.url
-    ? `${STRAPI_URL}${article.image.url}`
+    ? `${article.image.url}`
     : "/placeholder.jpg";
 
   return (

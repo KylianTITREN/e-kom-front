@@ -24,7 +24,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
   }
 
   const currentImage = images[selectedImage];
-  const mainImageUrl = `${STRAPI_URL}${currentImage.url}`;
+  const mainImageUrl = `${currentImage.url}`;
 
   return (
     <>
@@ -51,8 +51,8 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
           <div className="flex gap-2 overflow-x-auto pb-2">
             {images.map((img, index) => {
               const thumbUrl = img.formats?.thumbnail?.url
-                ? `${STRAPI_URL}${img.formats.thumbnail.url}`
-                : `${STRAPI_URL}${img.url}`;
+                ? `${img.formats.thumbnail.url}`
+                : `${img.url}`;
 
               return (
                 <button
