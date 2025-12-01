@@ -13,8 +13,6 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
   const [selectedImage, setSelectedImage] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
-  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
-
   if (!images || images.length === 0) {
     return (
       <div className="relative h-96 md:h-[500px] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
