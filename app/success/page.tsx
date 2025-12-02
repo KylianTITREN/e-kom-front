@@ -11,7 +11,8 @@ export default function SuccessPage() {
   useEffect(() => {
     // Vider le panier après un paiement réussi
     clearCart();
-  }, [clearCart]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // On ne veut exécuter qu'une seule fois au montage
 
   return (
     <div className="max-w-2xl mx-auto text-center py-12">

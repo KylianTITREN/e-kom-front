@@ -21,49 +21,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/actualites`,
       lastModified: new Date(),
-      changeFrequency: "daily",
+      changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/panier`,
-      lastModified: new Date(),
-      changeFrequency: "always",
-      priority: 0.3,
+      priority: 0.7,
     },
   ];
 
-  // Pages produits dynamiques
+  // Récupérer les produits
   const products = await getProducts();
   const productPages: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${baseUrl}/produit/${product.slug}`,
-    lastModified: new Date(product.updatedAt || product.createdAt),
+    lastModified: new Date(product.updatedAt),
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
-  // Pages actualités dynamiques
+  // Récupérer les actualités
   const news = await getNews();
   const newsPages: MetadataRoute.Sitemap = news.map((article) => ({
     url: `${baseUrl}/actualites/${article.slug}`,
-    lastModified: new Date(article.updatedAt || article.publishedDate),
+    lastModified: new Date(article.updatedAt),
     changeFrequency: "monthly" as const,
-    priority: 0.7,
+    priority: 0.6,
   }));
 
-  // Pages légales dynamiques
+  // Récupérer les pages légales
   const legalPages = await getLegalPages();
-  const legalPagesSitemap: MetadataRoute.Sitemap = legalPages.map((page) => ({
+  const legalPagesMap: MetadataRoute.Sitemap = legalPages.map((page) => ({
     url: `${baseUrl}/legal/${page.slug}`,
-    lastModified: new Date(page.updatedAt || page.createdAt),
-    changeFrequency: "yearly" as const,
-    priority: 0.4,
+    lastModified: new Date(page.updatedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
   }));
 
-  return [...staticPages, ...productPages, ...newsPages, ...legalPagesSitemap];
+  return [...staticPages, ...productPages, ...newsPages, ...legalPagesMap];
 }
