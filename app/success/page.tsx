@@ -2,16 +2,21 @@
 
 import Link from "next/link";
 import Button from "@/components/Button";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useCart } from "@/context/CartContext";
+import { useSearchParams } from "next/navigation";
 
-export default function SuccessPage() {
+function SuccessContent() {
   const { clearCart } = useCart();
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
     // Vider le panier après un paiement réussi
-    clearCart();
-  }, [clearCart]);
+    if (sessionId) {
+      clearCart();
+    }
+  }, [clearCart, sessionId]);
 
   return (
     <div className="max-w-2xl mx-auto text-center py-12">
@@ -53,5 +58,19 @@ export default function SuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-2xl mx-auto text-center py-12">
+        <div className="bg-white rounded-lg shadow-md p-8">
+          <p className="text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }
