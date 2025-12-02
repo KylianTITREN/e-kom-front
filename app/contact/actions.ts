@@ -28,8 +28,13 @@ export async function sendContactEmail(formData: FormData) {
   }
 
   try {
+    // Formater l'expéditeur avec le nom si disponible
+    const fromName = process.env.NEXT_PUBLIC_EMAIL_FROM_NAME || "Site";
+    const fromEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL_FROM || "onboarding@resend.dev";
+    const fromFormatted = `${fromName} <${fromEmail}>`;
+
     const { data, error } = await resend.emails.send({
-      from: process.env.NEXT_PUBLIC_CONTACT_EMAIL_FROM || "onboarding@resend.dev",
+      from: fromFormatted,
       to: process.env.NEXT_PUBLIC_CONTACT_EMAIL_TO || "delivered@resend.dev",
       subject: `Nouveau message de contact - ${name}`,
       replyTo: email,
