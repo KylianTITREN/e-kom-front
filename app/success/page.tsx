@@ -39,13 +39,13 @@ export default function SuccessPage() {
             Merci pour votre commande. Vous recevrez bientôt un email de confirmation.
           </p>
         </div>
-        <div className="space-y-4">
-          <Link href="/produits">
+        <div className="flex flex-col gap-4">
+          <Link href="/produits" className="w-full">
             <Button fullWidth>
               Continuer mes achats
             </Button>
           </Link>
-          <Link href="/">
+          <Link href="/" className="w-full">
             <Button variant="secondary" fullWidth>
               Retour à l&apos;accueil
             </Button>
