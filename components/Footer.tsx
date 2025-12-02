@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { Settings } from "@/types";
-import { headers } from "next/headers";
 
 type FooterProps = {
   settings: Settings | null;
 };
 
-export default async function Footer({ settings }: FooterProps) {
+export default function Footer({ settings }: FooterProps) {
   const currentYear = new Date().getFullYear();
-  const headersList = await headers()
-  const host = headersList.get('X-Forwarded-Host') ?? 'e-kom'
+  const host = settings?.siteName || 'e-kom'
 
   return (
     <footer className="bg-primary text-background-light mt-auto border-t border-accent/20">
