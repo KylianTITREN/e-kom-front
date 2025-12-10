@@ -43,13 +43,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addItem = (newItem: Omit<CartItem, "quantity">) => {
     setItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item.id === newItem.id);
+      const existingItemIndex = currentItems.findIndex((item) => item.id === newItem.id);
 
-      if (existingItem) {
-        // Limiter à 1 produit max par type - ne pas ajouter si déjà présent
-        return currentItems;
+      if (existingItemIndex !== -1) {
+        // Remplacer l'item existant par le nouveau (met à jour prix, gravure, etc.)
+        const updatedItems = [...currentItems];
+        updatedItems[existingItemIndex] = { ...newItem, quantity: 1 };
+        return updatedItems;
       }
 
+      // Ajouter le nouvel item
       return [...currentItems, { ...newItem, quantity: 1 }];
     });
   };
