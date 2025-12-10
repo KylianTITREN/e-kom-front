@@ -14,7 +14,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       try {
-        setItems(JSON.parse(savedCart));
+        const parsedItems = JSON.parse(savedCart);
+        // Note: les fichiers (logoFile) ne peuvent pas être persistés dans localStorage
+        // Seulement logoUrl (base64) est sauvegardé
+        setItems(parsedItems);
       } catch (error) {
         console.error("Erreur lors du chargement du panier:", error);
       }
@@ -25,7 +28,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // Sauvegarder le panier dans localStorage à chaque modification
   useEffect(() => {
     if (isLoaded) {
-      localStorage.setItem("cart", JSON.stringify(items));
+      // Sérialiser le panier en excluant les objets File
+      const serializableItems = items.map(item => ({
+        ...item,
+        engraving: item.engraving ? {
+          ...item.engraving,
+          // On garde logoUrl (base64) mais on retire logoFile (non sérialisable)
+          logoFile: undefined,
+        } : undefined,
+      }));
+      localStorage.setItem("cart", JSON.stringify(serializableItems));
     }
   }, [items, isLoaded]);
 
@@ -64,7 +76,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => {
+    const itemPrice = item.price * item.quantity;
+    const engravingPrice = item.engraving ? item.engraving.price * item.quantity : 0;
+    return sum + itemPrice + engravingPrice;
+  }, 0);
   const hasAgeRestrictedItems = items.some((item) => item.ageRestricted === true);
 
   return (

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, getProducts } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
 import StickyBar from "@/components/StickyBar";
+import { EngravingProvider } from "@/context/EngravingContext";
 
 interface ProductLayoutProps {
   children: React.ReactNode;
@@ -23,8 +24,8 @@ export default async function ProductLayout({ children, params }: ProductLayoutP
   ).slice(0, 6);
 
   return (
-    <>
-        <StickyBar product={product} />
+    <EngravingProvider>
+      <StickyBar product={product} />
       {children}
       {similarProducts.length > 0 && (
         <section className="max-w-6xl mx-auto mt-16">
@@ -32,6 +33,6 @@ export default async function ProductLayout({ children, params }: ProductLayoutP
           <ProductGrid products={similarProducts} />
         </section>
       )}
-    </>
+    </EngravingProvider>
   );
 }

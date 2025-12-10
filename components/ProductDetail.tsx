@@ -3,15 +3,18 @@
 import Link from "next/link";
 import NextImage from "next/image";
 import ImageGallery from "@/components/ImageGallery";
+import EngravingOptions from "@/components/EngravingOptions";
 import { Product } from "@/types";
 import { richTextToString } from "@/lib/api";
+import { useEngraving } from "@/context/EngravingContext";
 
 interface ProductDetailProps {
   product: Product;
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
-  const { name, description, price, images, ageRestricted, brand, category, subCategory } = product;
+  const { name, description, price, images, ageRestricted, brand, category, subCategory, engravings } = product;
+  const { setSelectedEngraving } = useEngraving();
 
   // Convertir la description RichText en string
   const descriptionText = richTextToString(description);
@@ -66,6 +69,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                   <div className="prose prose-gray mb-8 font-paragraph text-lg">
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">{descriptionText}</p>
                   </div>
+
+                  {/* Options de gravure */}
+                  {engravings && engravings.length > 0 && (
+                    <EngravingOptions
+                      options={engravings}
+                      onEngravingChange={setSelectedEngraving}
+                    />
+                  )}
                 </div>
               </div>
             </div>

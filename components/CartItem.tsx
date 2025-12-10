@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { CartItem as CartItemType } from "@/types";
 
 interface CartItemProps {
@@ -11,8 +12,8 @@ interface CartItemProps {
 export default function CartItem({ item, onRemove }: CartItemProps) {
   return (
     <div className="flex items-center gap-6 bg-background-card border border-accent/10 p-6">
-      {/* Image */}
-      <div className="relative h-28 w-28 flex-shrink-0 bg-background overflow-hidden">
+      {/* Image cliquable */}
+      <Link href={`/produit/${item.slug}`} className="relative h-28 w-28 flex-shrink-0 bg-background overflow-hidden hover:opacity-80 transition-opacity">
         {item.image && !item.image.includes('placeholder.jpg') ? (
           <Image
             src={item.image}
@@ -31,18 +32,44 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
             <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Info */}
       <div className="flex-grow">
-        <h3 className="font-medium text-primary mb-2 text-lg">{item.name}</h3>
+        <Link href={`/produit/${item.slug}`} className="hover:text-accent transition-colors">
+          <h3 className="font-medium text-primary mb-2 text-lg">{item.name}</h3>
+        </Link>
         <p className="text-accent font-semibold text-lg">{item.price.toFixed(2)} €</p>
+
+        {/* Informations de gravure */}
+        {item.engraving && (
+          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md text-sm">
+            <p className="font-semibold text-primary mb-1">✍️ Gravure: {item.engraving.label}</p>
+            {item.engraving.text && (
+              <p className="text-gray-700">Texte: {item.engraving.text}</p>
+            )}
+            {item.engraving.logoUrl && (
+              <div className="mt-2">
+                <p className="text-gray-700 mb-1">Logo:</p>
+                <Image
+                  src={item.engraving.logoUrl}
+                  alt="Logo de gravure"
+                  width={64}
+                  height={64}
+                  className="object-contain border border-gray-300 rounded"
+                  unoptimized
+                />
+              </div>
+            )}
+            <p className="text-accent font-semibold mt-1">+{item.engraving.price.toFixed(2)} €</p>
+          </div>
+        )}
       </div>
 
       {/* Prix & Supprimer */}
       <div className="flex flex-col items-end gap-3">
         <p className="font-semibold text-xl text-accent">
-          {(item.price * item.quantity).toFixed(2)} €
+          {((item.price + (item.engraving?.price || 0)) * item.quantity).toFixed(2)} €
         </p>
         <button
           onClick={() => onRemove(item.id)}

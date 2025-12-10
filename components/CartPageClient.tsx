@@ -6,21 +6,46 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import { getStripe } from "@/lib/stripeClient";
 import { createCheckoutSession } from "@/lib/stripe";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getSettings } from "@/lib/api";
 
 export default function CartPageClient() {
   const { items, removeItem, totalPrice, clearCart, hasAgeRestrictedItems } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const settings = await getSettings();
+      if (settings?.freeShippingThreshold) {
+        setFreeShippingThreshold(settings.freeShippingThreshold);
+      }
+    }
+    fetchSettings();
+  }, []);
 
   const handleCheckout = async () => {
     setIsLoading(true);
-    
+
     try {
-      const sessionId = await createCheckoutSession(items);
-      
-      if (!sessionId) {
-        alert("Erreur lors de la création de la session de paiement");
+      const result = await createCheckoutSession(items);
+
+      // Si le panier est obsolète, vider le panier et afficher les détails
+      if (result.error?.code === "cart_outdated") {
+        const detailsMessage = result.error.details?.length
+          ? "\n\nDétails:\n" + result.error.details.join("\n")
+          : "";
+
+        alert(result.error.message + detailsMessage);
+        clearCart(); // Vider le panier automatiquement
+        setIsLoading(false);
+        return;
+      }
+
+      // Autres erreurs
+      if (!result.sessionId || result.error) {
+        alert(result.error?.message || "Erreur lors de la création de la session de paiement");
         setIsLoading(false);
         return;
       }
@@ -32,8 +57,8 @@ export default function CartPageClient() {
         return;
       }
 
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      
+      const { error } = await stripe.redirectToCheckout({ sessionId: result.sessionId });
+
       if (error) {
         console.error("Erreur Stripe:", error);
         alert("Erreur lors de la redirection vers le paiement");
@@ -81,12 +106,38 @@ export default function CartPageClient() {
       </div>
 
       <div className="bg-background-card border border-accent/20 p-8">
-        <div className="flex justify-between items-center mb-6 pb-6 border-b border-accent/20">
+        <div className="flex justify-between items-center mb-4 pb-6 border-b border-accent/20">
           <span className="text-lg font-medium text-text uppercase tracking-wide">Total</span>
           <span className="text-3xl font-semibold text-accent">
             {totalPrice.toFixed(2)} €
           </span>
         </div>
+
+        {/* Info livraison offerte - toujours visible */}
+        {freeShippingThreshold && (
+          <div className="mb-6 text-center text-sm text-gray-600">
+            🚚 Livraison offerte dès {freeShippingThreshold.toFixed(2)} €
+          </div>
+        )}
+
+        {/* Message livraison gratuite - conditionnel */}
+        {freeShippingThreshold && (
+          <div className="mb-6">
+            {totalPrice >= freeShippingThreshold ? (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-green-700 font-medium text-center">
+                  🎉 Vous bénéficiez de la livraison gratuite !
+                </p>
+              </div>
+            ) : (
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+                <p className="text-blue-700 text-center">
+                  Plus que <span className="font-semibold">{(freeShippingThreshold - totalPrice).toFixed(2)} €</span> pour bénéficier de la livraison gratuite
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Vérification d'âge si produits restreints */}
         {hasAgeRestrictedItems && (

@@ -79,6 +79,21 @@ export interface Brand {
   updatedAt: string;
 }
 
+export interface Engraving {
+  id: number;
+  documentId: string;
+  title: string;
+  description?: string;
+  price: number;
+  allowText: boolean;
+  textMaxLength: number;
+  allowLogo: boolean;
+  stripeProductId?: string;
+  stripePriceId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Product {
   id: number;
   documentId: string;
@@ -88,6 +103,7 @@ export interface Product {
   price: number;
   images?: StrapiImage[];
   ageRestricted?: boolean;
+  engravings?: Engraving[];
   category?: Category;
   subCategory?: SubCategory;
   brand?: Brand;
@@ -160,6 +176,7 @@ export interface Settings {
     linkedin?: string;
   };
   googleAnalyticsId?: string;
+  freeShippingThreshold?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -177,13 +194,23 @@ export interface StrapiResponse<T> {
 }
 
 // Types pour le panier
+export interface EngravingData {
+  type: string;
+  label: string;
+  price: number;
+  text?: string;
+  logoUrl?: string;
+}
+
 export interface CartItem {
   id: string;
   name: string;
+  slug: string;
   price: number;
   quantity: number;
   image: string;
   ageRestricted?: boolean;
+  engraving?: EngravingData;
 }
 
 export interface CartContextType {

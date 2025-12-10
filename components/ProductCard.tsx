@@ -28,6 +28,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     addItem({
       id: product.id.toString(),
       name: name,
+      slug: slug || "",
       price,
       image: imageUrl,
       ageRestricted,
