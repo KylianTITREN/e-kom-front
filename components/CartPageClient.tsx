@@ -23,7 +23,7 @@ export default function CartPageClient() {
 
           // Trouver le seuil de livraison gratuite le plus bas
           const thresholds = data.rates
-            .map((rate: any) => rate.freeShippingThreshold)
+            .map((rate: { freeShippingThreshold: number | null }) => rate.freeShippingThreshold)
             .filter((threshold: number | null) => threshold !== null);
 
           if (thresholds.length > 0) {
