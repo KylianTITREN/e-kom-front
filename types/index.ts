@@ -176,7 +176,6 @@ export interface Settings {
     linkedin?: string;
   };
   googleAnalyticsId?: string;
-  freeShippingThreshold?: number;
   createdAt: string;
   updatedAt: string;
 }

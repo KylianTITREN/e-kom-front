@@ -7,7 +7,6 @@ import Link from "next/link";
 import { getStripe } from "@/lib/stripeClient";
 import { createCheckoutSession } from "@/lib/stripe";
 import { useState, useEffect } from "react";
-import { getSettings } from "@/lib/api";
 
 export default function CartPageClient() {
   const { items, removeItem, totalPrice, clearCart, hasAgeRestrictedItems } = useCart();
@@ -16,13 +15,26 @@ export default function CartPageClient() {
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null);
 
   useEffect(() => {
-    async function fetchSettings() {
-      const settings = await getSettings();
-      if (settings?.freeShippingThreshold) {
-        setFreeShippingThreshold(settings.freeShippingThreshold);
+    async function fetchShippingRates() {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/shipping/rates`);
+        if (response.ok) {
+          const data = await response.json();
+
+          // Trouver le seuil de livraison gratuite le plus bas
+          const thresholds = data.rates
+            .map((rate: any) => rate.freeShippingThreshold)
+            .filter((threshold: number | null) => threshold !== null);
+
+          if (thresholds.length > 0) {
+            setFreeShippingThreshold(Math.min(...thresholds));
+          }
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des tarifs de livraison:", error);
       }
     }
-    fetchSettings();
+    fetchShippingRates();
   }, []);
 
   const handleCheckout = async () => {
@@ -107,37 +119,37 @@ export default function CartPageClient() {
 
       <div className="bg-background-card border border-accent/20 p-8">
         <div className="flex justify-between items-center mb-4 pb-6 border-b border-accent/20">
-          <span className="text-lg font-medium text-text uppercase tracking-wide">Total</span>
+          <span className="text-lg font-medium text-text uppercase tracking-wide">Sous-total</span>
           <span className="text-3xl font-semibold text-accent">
             {totalPrice.toFixed(2)} €
           </span>
         </div>
 
-        {/* Info livraison offerte - toujours visible */}
-        {freeShippingThreshold && (
-          <div className="mb-6 text-center text-sm text-gray-600">
-            🚚 Livraison offerte dès {freeShippingThreshold.toFixed(2)} €
-          </div>
-        )}
-
-        {/* Message livraison gratuite - conditionnel */}
-        {freeShippingThreshold && (
-          <div className="mb-6">
-            {totalPrice >= freeShippingThreshold ? (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-md">
-                <p className="text-green-700 font-medium text-center">
-                  🎉 Vous bénéficiez de la livraison gratuite !
+        {/* Message livraison */}
+        <div className="mb-6 space-y-3">
+          {freeShippingThreshold && totalPrice >= freeShippingThreshold ? (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+              <p className="text-green-700 font-medium text-center">
+                🎉 Vous bénéficiez de la livraison gratuite !
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="text-center">
+                <p className="text-sm text-gray-600">
+                  📦 Frais de livraison calculés à l&apos;étape suivante
                 </p>
               </div>
-            ) : (
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
-                <p className="text-blue-700 text-center">
-                  Plus que <span className="font-semibold">{(freeShippingThreshold - totalPrice).toFixed(2)} €</span> pour bénéficier de la livraison gratuite
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+              {freeShippingThreshold && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+                  <p className="text-blue-700 text-center">
+                    Plus que <span className="font-semibold">{(freeShippingThreshold - totalPrice).toFixed(2)} €</span> pour bénéficier de la livraison gratuite
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
 
         {/* Vérification d'âge si produits restreints */}
         {hasAgeRestrictedItems && (

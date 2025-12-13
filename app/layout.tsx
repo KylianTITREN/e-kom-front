@@ -41,7 +41,7 @@ export default async function RootLayout({
     <html lang="fr" className={`${cormorant.variable} ${montserrat.variable}`}>
       <body className="font-sans flex flex-col min-h-screen bg-white text-text">
         {isEnabled && <PreviewBanner />}
-        <FreeShippingBanner settings={settings} />
+        <FreeShippingBanner />
         <CartProvider>
           <Header settings={settings} />
           <main className={`flex-grow container mx-auto px-4 py-8 ${isEnabled ? 'mt-10' : ''}`}>
