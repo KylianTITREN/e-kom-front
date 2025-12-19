@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import NextImage from "next/image";
 import ImageGallery from "@/components/ImageGallery";
 import EngravingOptions from "@/components/EngravingOptions";
 import { Product } from "@/types";
@@ -64,11 +63,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     {brand && (
                       <span className="flex items-center gap-2 bg-beige/80 border border-brown/20 text-brown font-sans px-4 py-1 rounded-xl text-sm font-medium">
                         <span className="uppercase font-semibold">Marque</span>
-                        {brand.logo && (
-                          <span className="relative w-5 h-5">
-                            <NextImage src={`${brand.logo.url}`} alt={brand.name} fill className="object-contain rounded-full" />
-                          </span>
-                        )}
                         {brand.name}
                       </span>
                     )}
