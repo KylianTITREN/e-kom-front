@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
-import { Settings } from "@/types";
+import { useState, useEffect } from "react";
+import { Settings, Category } from "@/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { getCategories } from "@/lib/api";
 
 type HeaderProps = {
   settings: Settings | null;
@@ -16,7 +17,19 @@ export default function Header({ settings }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [shopMenuOpen, setShopMenuOpen] = useState(false);
+  const [mobileShopMenuOpen, setMobileShopMenuOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const router = useRouter();
+
+  // Charger les catégories
+  useEffect(() => {
+    async function fetchCategories() {
+      const data = await getCategories();
+      setCategories(data);
+    }
+    fetchCategories();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,13 +71,46 @@ export default function Header({ settings }: HeaderProps) {
                 Accueil
               </Link>
             </li>
-            <li>
+            <li
+              className="relative group"
+              onMouseEnter={() => setShopMenuOpen(true)}
+              onMouseLeave={() => setShopMenuOpen(false)}
+            >
               <Link
                 href="/produits"
-                className="text-text-secondary font-sans hover:text-primary transition-colors text-sm font-medium tracking-wide uppercase"
+                className="text-text-secondary font-sans hover:text-primary transition-colors text-sm font-medium tracking-wide uppercase flex items-center gap-1"
               >
                 Boutique
+                {categories.length > 0 && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className={`w-4 h-4 transition-transform ${shopMenuOpen ? 'rotate-180' : ''}`}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                )}
               </Link>
+
+              {/* Menu déroulant - Afficher uniquement s'il y a des catégories */}
+              {shopMenuOpen && categories.length > 0 && (
+                <div className="absolute top-full left-0 pt-2 z-50">
+                  <div className="bg-white border border-accent/20 shadow-lg rounded-md py-2 min-w-[200px]">
+                    {categories.map((category) => (
+                      <Link
+                        key={category.id}
+                        href={`/produits?category=${category.slug}`}
+                        className="block px-4 py-2 text-sm text-text-secondary hover:bg-gray-50 hover:text-primary transition-colors"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </li>
             <li>
               <Link
@@ -246,13 +292,52 @@ export default function Header({ settings }: HeaderProps) {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/produits"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-text-secondary hover:text-primary transition-colors text-sm font-medium tracking-wide uppercase"
-                >
-                  Boutique
-                </Link>
+                <div>
+                  <button
+                    onClick={() => setMobileShopMenuOpen(!mobileShopMenuOpen)}
+                    className="w-full flex items-center justify-between text-text-secondary hover:text-primary transition-colors text-sm font-medium tracking-wide uppercase"
+                  >
+                    <span>Boutique</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className={`w-4 h-4 transition-transform ${mobileShopMenuOpen ? 'rotate-180' : ''}`}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </button>
+
+                  {mobileShopMenuOpen && (
+                    <div className="mt-2 ml-4 space-y-2">
+                      <Link
+                        href="/produits"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setMobileShopMenuOpen(false);
+                        }}
+                        className="block text-text-secondary hover:text-primary transition-colors text-sm py-1"
+                      >
+                        Voir tout
+                      </Link>
+                      {categories.map((category) => (
+                        <Link
+                          key={category.id}
+                          href={`/produits?category=${category.slug}`}
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            setMobileShopMenuOpen(false);
+                          }}
+                          className="block text-text-secondary hover:text-primary transition-colors text-sm py-1"
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </li>
               <li>
                 <Link

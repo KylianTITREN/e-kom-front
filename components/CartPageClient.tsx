@@ -7,6 +7,7 @@ import Link from "next/link";
 import { getStripe } from "@/lib/stripeClient";
 import { createCheckoutSession } from "@/lib/stripe";
 import { useState, useEffect } from "react";
+import { ShippingRate } from "@/types";
 
 export default function CartPageClient() {
   const { items, removeItem, totalPrice, clearCart, hasAgeRestrictedItems } = useCart();
@@ -23,7 +24,7 @@ export default function CartPageClient() {
 
           // Trouver le seuil de livraison gratuite le plus bas
           const thresholds = data.rates
-            .map((rate: { freeShippingThreshold: number | null }) => rate.freeShippingThreshold)
+            .map((rate: ShippingRate) => rate.freeShippingThreshold)
             .filter((threshold: number | null) => threshold !== null);
 
           if (thresholds.length > 0) {

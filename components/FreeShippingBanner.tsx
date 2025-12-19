@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ShippingRate } from "@/types";
 
 export default function FreeShippingBanner() {
   const [freeShippingThreshold, setFreeShippingThreshold] = useState<number | null>(null);
@@ -14,7 +15,7 @@ export default function FreeShippingBanner() {
 
           // Trouver le seuil de livraison gratuite le plus bas
           const thresholds = data.rates
-            .map((rate: { freeShippingThreshold: number | null }) => rate.freeShippingThreshold)
+            .map((rate: ShippingRate) => rate.freeShippingThreshold)
             .filter((threshold: number | null) => threshold !== null);
 
           if (thresholds.length > 0) {

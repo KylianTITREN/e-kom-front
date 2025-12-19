@@ -13,7 +13,7 @@ interface ProductDetailProps {
 }
 
 export default function ProductDetail({ product }: ProductDetailProps) {
-  const { name, description, price, images, ageRestricted, brand, category, subCategory, engravings } = product;
+  const { name, description, price, images, ageRestricted, isPromo, limitedEdition, endOfSeries, brand, category, subCategory, engravings } = product;
   const { setSelectedEngraving } = useEngraving();
 
   // Convertir la description RichText en string
@@ -30,9 +30,26 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               <span className="text-gray-800">{name}</span>
             </div>
             <div className="relative grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 items-start">
+              {/* Badges gauche - Priorité: Promo > Édition Limitée > Fin de Série */}
+              {isPromo && (
+                <div className="absolute top-3 left-3 bg-accent text-white text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+                  EN PROMOTION
+                </div>
+              )}
+              {!isPromo && limitedEdition && (
+                <div className="absolute top-3 left-3 bg-primary text-white text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+                  ÉDITION LIMITÉE
+                </div>
+              )}
+              {!isPromo && !limitedEdition && endOfSeries && (
+                <div className="absolute top-3 left-3 bg-beige text-brown text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+                  FIN DE SÉRIE
+                </div>
+              )}
+
               {/* Flag 18+ en haut à droite, style carte produit */}
               {ageRestricted && (
-            <div className="absolute top-3 right-3 bg-primary text-background-light text-xs font-semibold px-3 py-1.5 tracking-wide">
+            <div className="absolute top-3 right-3 bg-primary text-background-light text-xs font-semibold px-3 py-1.5 tracking-wide z-10">
               18+
             </div>
               )}

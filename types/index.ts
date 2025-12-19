@@ -54,6 +54,8 @@ export interface Category {
   name: string;
   slug: string;
   description?: string;
+  brands?: Brand[];
+  subCategories?: SubCategory[];
   createdAt: string;
   updatedAt: string;
 }
@@ -64,6 +66,8 @@ export interface SubCategory {
   name: string;
   slug: string;
   description?: string;
+  category?: Category;
+  brands?: Brand[];
   createdAt: string;
   updatedAt: string;
 }
@@ -74,7 +78,8 @@ export interface Brand {
   name: string;
   slug: string;
   description?: string;
-  logo?: StrapiImage;
+  categories?: Category[];
+  subCategories?: SubCategory[];
   createdAt: string;
   updatedAt: string;
 }
@@ -103,6 +108,9 @@ export interface Product {
   price: number;
   images?: StrapiImage[];
   ageRestricted?: boolean;
+  isPromo?: boolean;
+  limitedEdition?: boolean;
+  endOfSeries?: boolean;
   engravings?: Engraving[];
   category?: Category;
   subCategory?: SubCategory;
@@ -117,10 +125,11 @@ export interface News {
   documentId: string;
   title: string;
   slug: string;
-  excerpt: string;
-  content: RichTextBlock[] | string;
+  excerpt?: string;
+  content?: RichTextBlock[] | string;
   image?: StrapiImage;
-  publishedDate: string;
+  startDate: string;
+  endDate?: string;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
@@ -221,4 +230,22 @@ export interface CartContextType {
   totalItems: number;
   totalPrice: number;
   hasAgeRestrictedItems: boolean;
+}
+
+// Types pour les tarifs de livraison
+export interface ShippingRate {
+  id: string;
+  displayName: string;
+  type: string;
+  fixedAmount: {
+    amount: number;
+    currency: string;
+  } | null;
+  freeShippingThreshold: number | null;
+  showUnder: number | null;
+  deliveryEstimate: {
+    minimum: any;
+    maximum: any;
+  } | null;
+  metadata: Record<string, string>;
 }

@@ -12,7 +12,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
-  const { name, slug, documentId, price, images, ageRestricted, brand, category } = product;
+  const { name, slug, documentId, price, images, ageRestricted, isPromo, limitedEdition, endOfSeries, brand, category } = product;
 
   // Utiliser la première image ou un placeholder
   const firstImage = images && images.length > 0 ? images[0] : null;
@@ -57,9 +57,27 @@ export default function ProductCard({ product }: ProductCardProps) {
               <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
             </div>
           )}
+          {/* Badge 18+ */}
           {ageRestricted && (
-            <div className="absolute top-3 right-3 bg-primary text-background-light text-xs font-semibold px-3 py-1.5 tracking-wide">
+            <div className="absolute top-3 right-3 bg-primary text-background-light text-xs font-semibold px-3 py-1.5 tracking-wide z-10">
               18+
+            </div>
+          )}
+
+          {/* Badges gauche - Priorité: Promo > Édition Limitée > Fin de Série */}
+          {isPromo && (
+            <div className="absolute top-3 left-3 bg-accent text-white text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+              EN PROMOTION
+            </div>
+          )}
+          {!isPromo && limitedEdition && (
+            <div className="absolute top-3 left-3 bg-primary text-white text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+              ÉDITION LIMITÉE
+            </div>
+          )}
+          {!isPromo && !limitedEdition && endOfSeries && (
+            <div className="absolute top-3 left-3 bg-beige text-brown text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+              FIN DE SÉRIE
             </div>
           )}
         </div>

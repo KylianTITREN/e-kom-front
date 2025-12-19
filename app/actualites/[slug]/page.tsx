@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: {
       title,
       description,
       type: "article",
-      publishedTime: article.publishedDate,
+      publishedTime: article.startDate,
       images: imageUrl ? [{ url: imageUrl, alt: article.title }] : [],
     },
     twitter: {
@@ -90,7 +90,7 @@ export default async function NewsDetailPage({
   <h1 className="text-4xl font-title font-semibold text-primary mb-4 tracking-wide">{article.title}</h1>
         
         <time className="text-text-muted text-sm uppercase tracking-wide mb-8 block">
-          {new Date(article.publishedDate).toLocaleDateString("fr-FR", {
+          {new Date(article.startDate).toLocaleDateString("fr-FR", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -118,14 +118,18 @@ export default async function NewsDetailPage({
         </div>
 
         <div className="prose max-w-none">
-          <div className="text-xl text-text-secondary mb-8 leading-relaxed font-light">
-            {article.excerpt}
-          </div>
-          <div className="mt-8">
-            <ReactMarkdown>
-              {typeof article.content === 'string' ? article.content : ''}
-            </ReactMarkdown>
-          </div>
+          {article.excerpt && (
+            <div className="text-xl text-text-secondary mb-8 leading-relaxed font-light">
+              {article.excerpt}
+            </div>
+          )}
+          {article.content && (
+            <div className="mt-8">
+              <ReactMarkdown>
+                {typeof article.content === 'string' ? article.content : ''}
+              </ReactMarkdown>
+            </div>
+          )}
         </div>
       </article>
     </div>

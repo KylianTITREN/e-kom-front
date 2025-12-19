@@ -59,7 +59,7 @@ export default async function ActualitesPage() {
                 </div>
                 <div className="p-6">
                   <time className="text-xs text-text-muted uppercase tracking-wide font-medium">
-                    {new Date(article.publishedDate).toLocaleDateString("fr-FR", {
+                    {new Date(article.startDate).toLocaleDateString("fr-FR", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -68,7 +68,9 @@ export default async function ActualitesPage() {
                   <h2 className="text-xl font-medium text-primary group-hover:text-accent transition-colors mt-3 mb-3 leading-tight">
                     {article.title}
                   </h2>
-                  <p className="text-text-secondary text-sm line-clamp-3 leading-relaxed">{article.excerpt}</p>
+                  {article.excerpt && (
+                    <p className="text-text-secondary text-sm line-clamp-3 leading-relaxed">{article.excerpt}</p>
+                  )}
                 </div>
               </Link>
             );

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { getFeaturedProducts, getNews, getHomepageContent } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
+import ProductCard from "@/components/ProductCard";
 import Button from "@/components/Button";
+import HorizontalScroll from "@/components/HorizontalScroll";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { Metadata } from "next";
@@ -77,7 +79,18 @@ export default async function HomePage() {
             Voir tout →
           </Link>
         </div>
-        <ProductGrid products={featuredProducts} />
+        {/* Desktop: grid classique */}
+        <div className="hidden md:block">
+          <ProductGrid products={featuredProducts} />
+        </div>
+        {/* Mobile: scroll horizontal avec flèches */}
+        <div className="md:hidden">
+          <HorizontalScroll itemWidth="90vw">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </HorizontalScroll>
+        </div>
       </section>
 
       {/* Actualités */}
@@ -91,7 +104,8 @@ export default async function HomePage() {
               Voir toutes les actualités →
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Desktop: grid classique */}
+          <div className="hidden md:grid md:grid-cols-3 gap-8">
             {latestNews.map((article) => {
               const imageUrl = article.image?.url
                 ? `${article.image.url}`
@@ -124,7 +138,7 @@ export default async function HomePage() {
                   </div>
                   <div className="p-6">
                     <time className="text-xs text-text-muted uppercase tracking-wide font-medium">
-                      {new Date(article.publishedDate).toLocaleDateString("fr-FR", {
+                      {new Date(article.startDate).toLocaleDateString("fr-FR", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -133,13 +147,70 @@ export default async function HomePage() {
                     <h3 className="text-xl font-medium text-primary group-hover:text-accent transition-colors mt-3 mb-3 leading-tight">
                       {article.title}
                     </h3>
-                    <p className="text-text-secondary text-sm line-clamp-2 leading-relaxed">
-                      {article.excerpt}
-                    </p>
+                    {article.excerpt && (
+                      <p className="text-text-secondary text-sm line-clamp-2 leading-relaxed">
+                        {article.excerpt}
+                      </p>
+                    )}
                   </div>
                 </Link>
               );
             })}
+          </div>
+          {/* Mobile: scroll horizontal avec flèches */}
+          <div className="md:hidden">
+            <HorizontalScroll itemWidth="90vw">
+              {latestNews.map((article) => {
+                const imageUrl = article.image?.url
+                  ? `${article.image.url}`
+                  : "/placeholder.jpg";
+
+                return (
+                  <Link
+                    key={article.id}
+                    href={`/actualites/${article.slug}`}
+                    className="group block bg-background-card border border-accent/10 overflow-hidden hover:border-accent/30 transition-all duration-300"
+                  >
+                    <div className="relative h-56 w-full bg-background overflow-hidden">
+                      {article.image ? (
+                        <Image
+                          src={imageUrl}
+                          alt={article.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-beige/60">
+                          <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="8" y="16" width="48" height="32" rx="6" fill="#C7B299" stroke="#8B6F4E" strokeWidth="2"/>
+                            <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
+                          </svg>
+                          <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <time className="text-xs text-text-muted uppercase tracking-wide font-medium">
+                        {new Date(article.startDate).toLocaleDateString("fr-FR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </time>
+                      <h3 className="text-xl font-medium text-primary group-hover:text-accent transition-colors mt-3 mb-3 leading-tight">
+                        {article.title}
+                      </h3>
+                      {article.excerpt && (
+                        <p className="text-text-secondary text-sm line-clamp-2 leading-relaxed">
+                          {article.excerpt}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </HorizontalScroll>
           </div>
         </section>
       )}
