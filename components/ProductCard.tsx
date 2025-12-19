@@ -54,7 +54,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
               </svg>
-              <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
+              <span className="mt-2 text-primary text-xs font-medium">Aucune image</span>
             </div>
           )}
           {/* Badge 18+ */}
@@ -76,7 +76,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
           {!isPromo && !limitedEdition && endOfSeries && (
-            <div className="absolute top-3 left-3 bg-beige text-brown text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+            <div className="absolute top-3 left-3 bg-beige text-primary text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
               FIN DE SÉRIE
             </div>
           )}

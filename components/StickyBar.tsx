@@ -39,9 +39,9 @@ export default function StickyBar({ product }: StickyBarProps) {
   };
 
   return (
-  <div className="fixed md:sticky bottom-0 md:top-[73px] left-0 right-0 z-30 w-full bg-white border-t border-copper border-t-[2px] md:border-t-0 border-b border-beige shadow-sm flex flex-col md:flex-row items-center justify-between px-0 py-2 md:p-4 gap-2 md:gap-0 md:mt-[-32px]">
+  <div className="fixed md:sticky bottom-0 md:top-[73px] left-0 right-0 z-30 w-full bg-white border-t border-accent border-t-[2px] md:border-t-0 border-b border-beige shadow-sm flex flex-col md:flex-row items-center justify-between px-0 py-2 md:p-4 gap-2 md:gap-0 md:mt-[-32px]">
       <div className="hidden md:flex flex-col items-start">
-        <span className="text-xl md:text-3xl font-bold text-copper font-title tracking-tight">{totalPrice.toFixed(2)} €</span>
+        <span className="text-xl md:text-3xl font-bold text-accent font-title tracking-tight">{totalPrice.toFixed(2)} €</span>
         {selectedEngraving && (
           <span className="text-xs text-gray-600">dont gravure +{selectedEngraving.price.toFixed(2)} €</span>
         )}

@@ -35,7 +35,7 @@ export default function FreeShippingBanner() {
   }
 
   return (
-    <div className="bg-accent text-white py-2 px-4 text-center text-sm font-medium">
+    <div className="bg-primary text-white py-2 px-4 text-center text-sm font-medium">
       🚚 Livraison offerte dès {freeShippingThreshold.toFixed(2)} €
     </div>
   );

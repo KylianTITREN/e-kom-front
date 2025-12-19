@@ -89,13 +89,15 @@ export default async function NewsDetailPage({
       <article>
   <h1 className="text-4xl font-title font-semibold text-primary mb-4 tracking-wide">{article.title}</h1>
         
-        <time className="text-text-muted text-sm uppercase tracking-wide mb-8 block">
-          {new Date(article.startDate).toLocaleDateString("fr-FR", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </time>
+        {article.startDate && (
+          <time className="text-text-muted text-sm uppercase tracking-wide mb-8 block">
+            {new Date(article.startDate).toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </time>
+        )}
 
         <div className="relative h-96 w-full mb-10 overflow-hidden border border-accent/10">
           {article.image ? (
@@ -112,7 +114,7 @@ export default async function NewsDetailPage({
                 <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
               </svg>
-              <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
+              <span className="mt-2 text-primary text-xs font-medium">Aucune image</span>
             </div>
           )}
         </div>

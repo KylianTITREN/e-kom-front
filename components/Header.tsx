@@ -99,6 +99,12 @@ export default function Header({ settings }: HeaderProps) {
               {shopMenuOpen && categories.length > 0 && (
                 <div className="absolute top-full left-0 pt-2 z-50">
                   <div className="bg-white border border-accent/20 shadow-lg rounded-md py-2 min-w-[200px]">
+                    <Link
+                      href="/produits"
+                      className="block px-4 py-2 text-sm text-primary font-semibold hover:bg-gray-50 transition-colors border-b border-accent/10"
+                    >
+                      Voir tout
+                    </Link>
                     {categories.map((category) => (
                       <Link
                         key={category.id}

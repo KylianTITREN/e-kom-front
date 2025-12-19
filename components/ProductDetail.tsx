@@ -41,7 +41,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 </div>
               )}
               {!isPromo && !limitedEdition && endOfSeries && (
-                <div className="absolute top-3 left-3 bg-beige text-brown text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
+                <div className="absolute top-3 left-3 bg-beige text-primary text-xs font-semibold px-3 py-1.5 tracking-wide shadow-md z-10">
                   FIN DE SÉRIE
                 </div>
               )}
@@ -57,22 +57,22 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               {/* Informations */}
               <div className="flex flex-col justify-between px-0 md:px-8">
                 <div>
-                  <h1 className="text-5xl font-title font-bold text-brown mb-4 text-left tracking-tight">{name}</h1>
-                  <p className="text-4xl font-bold text-copper mb-8 text-left">{price.toFixed(2)} €</p>
+                  <h1 className="text-5xl font-title font-bold text-primary mb-4 text-left tracking-tight">{name}</h1>
+                  <p className="text-4xl font-bold text-accent mb-8 text-left">{price.toFixed(2)} €</p>
                   <div className="flex flex-row flex-wrap gap-4 mb-10 items-center justify-center">
                     {brand && (
-                      <span className="flex items-center gap-2 bg-beige/80 border border-brown/20 text-brown font-sans px-4 py-1 rounded-xl text-sm font-medium">
+                      <span className="flex items-center gap-2 bg-beige/80 border border-primary/20 text-primary font-sans px-4 py-1 rounded-xl text-sm font-medium">
                         <span className="uppercase font-semibold">Marque</span>
                         {brand.name}
                       </span>
                     )}
                     {category && (
-                      <span className="bg-beige/80 border border-brown/20 text-brown font-sans px-4 py-1 rounded-xl text-sm font-medium">
+                      <span className="bg-beige/80 border border-primary/20 text-primary font-sans px-4 py-1 rounded-xl text-sm font-medium">
                         <span className="uppercase font-semibold">Catégorie</span> {category.name}
                       </span>
                     )}
                     {subCategory && (
-                      <span className="bg-beige/60 border border-brown/10 text-brown font-sans px-4 py-1 rounded-xl text-sm font-medium">
+                      <span className="bg-beige/60 border border-primary/10 text-primary font-sans px-4 py-1 rounded-xl text-sm font-medium">
                         <span className="uppercase font-semibold">Sous-catégorie</span> {subCategory.name}
                       </span>
                     )}

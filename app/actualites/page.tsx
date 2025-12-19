@@ -53,18 +53,20 @@ export default async function ActualitesPage() {
                         <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
                       </svg>
-                      <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
+                      <span className="mt-2 text-primary text-xs font-medium">Aucune image</span>
                     </div>
                   )}
                 </div>
                 <div className="p-6">
-                  <time className="text-xs text-text-muted uppercase tracking-wide font-medium">
-                    {new Date(article.startDate).toLocaleDateString("fr-FR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </time>
+                  {article.startDate && (
+                    <time className="text-xs text-text-muted uppercase tracking-wide font-medium">
+                      {new Date(article.startDate).toLocaleDateString("fr-FR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </time>
+                  )}
                   <h2 className="text-xl font-medium text-primary group-hover:text-accent transition-colors mt-3 mb-3 leading-tight">
                     {article.title}
                   </h2>

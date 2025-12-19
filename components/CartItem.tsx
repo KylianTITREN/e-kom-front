@@ -29,7 +29,7 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
               <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
             </svg>
-            <span className="mt-2 text-brown text-xs font-medium">Aucune image</span>
+            <span className="mt-2 text-primary text-xs font-medium">Aucune image</span>
           </div>
         )}
       </Link>

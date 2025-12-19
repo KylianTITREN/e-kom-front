@@ -29,7 +29,7 @@ export default async function ProductLayout({ children, params }: ProductLayoutP
       {children}
       {similarProducts.length > 0 && (
         <section className="max-w-6xl mx-auto mt-16">
-          <h2 className="text-2xl font-title font-bold text-brown mb-8 text-center">Produits similaires</h2>
+          <h2 className="text-2xl font-title font-bold text-primary mb-8 text-center">Produits similaires</h2>
           <ProductGrid products={similarProducts} />
         </section>
       )}
