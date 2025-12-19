@@ -16,9 +16,9 @@ const config: Config = {
           light: "#5a3d28",
         },
         accent: {
-          DEFAULT: "#b8906b", // Cuivre/doré
-          light: "#d4b896",
-          dark: "#9a7555",
+          DEFAULT: "#EB6C30", // Cuivre/doré
+          light: "#EBA030",
+          dark: "#d24e10ff",
         },
         background: {
           DEFAULT: "#ffffff", // Blanc
