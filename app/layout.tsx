@@ -9,6 +9,7 @@ import { getSettings } from "@/lib/api";
 import { CartProvider } from "@/context/CartContext";
 import { Analytics } from "@vercel/analytics/next";
 import { draftMode } from "next/headers";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -50,6 +51,7 @@ export default async function RootLayout({
           <Footer settings={settings} />
         </CartProvider>
         <Analytics/>
+        <SpeedInsights />
       </body>
     </html>
   );
