@@ -1,9 +1,10 @@
 "use client";
 
-import { Category, SubCategory, Brand } from "@/types";
+import { Category, SubCategory, Brand, Product } from "@/types";
 import { useState, useEffect } from "react";
 
 interface ProductFiltersProps {
+  products: Product[]; // Ajouter les produits pour calculer les relations
   categories: Category[];
   subCategories: SubCategory[];
   brands: Brand[];
@@ -17,6 +18,7 @@ interface ProductFiltersProps {
 }
 
 export default function ProductFilters({
+  products,
   categories,
   subCategories,
   brands,
@@ -46,64 +48,68 @@ export default function ProductFilters({
     }
   }, [isPanelOpen, selectedCategory, selectedSubCategory, selectedBrands]);
 
-  // Filtrer les sous-catégories en fonction de la catégorie draft
+  // Filtrer les sous-catégories basé sur les produits qui ont la catégorie sélectionnée
   useEffect(() => {
     if (draftCategory) {
-      const category = categories.find((cat) => cat.slug === draftCategory);
+      // Trouver tous les produits de cette catégorie
+      const productsInCategory = products.filter((product) => {
+        const cat = product.category as Category | undefined;
+        return cat && cat.slug === draftCategory;
+      });
 
-      if (category) {
-        const relatedSubCats = subCategories.filter((subCat) => {
-          if (!subCat.category) return false;
-          const parentCategory = subCat.category as Category;
-          return parentCategory.slug === draftCategory ||
-                 parentCategory.documentId === category.documentId;
-        });
-        setFilteredSubCategories(relatedSubCats);
-      }
+      // Extraire les sous-catégories uniques de ces produits
+      const subCatMap = new Map<string, SubCategory>();
+      productsInCategory.forEach((product) => {
+        if (product.subCategory) {
+          const subCat = product.subCategory as SubCategory;
+          if (!subCatMap.has(subCat.documentId)) {
+            subCatMap.set(subCat.documentId, subCat);
+          }
+        }
+      });
+
+      setFilteredSubCategories(Array.from(subCatMap.values()));
     } else {
       setFilteredSubCategories([]);
     }
-  }, [draftCategory, categories, subCategories]);
+  }, [draftCategory, products]);
 
-  // Filtrer les marques en fonction de la catégorie ou sous-catégorie draft
+  // Filtrer les marques basé sur les produits qui ont la catégorie/sous-catégorie sélectionnée
   useEffect(() => {
-    // Si une sous-catégorie est sélectionnée, afficher les marques de cette sous-catégorie
+    let relevantProducts = products;
+
+    // Si une sous-catégorie est sélectionnée, filtrer par sous-catégorie
     if (draftSubCategory) {
-      const subCategory = subCategories.find((subCat) => subCat.slug === draftSubCategory);
-
-      if (subCategory) {
-        const relatedBrands = brands.filter((brand) => {
-          if (!brand.subCategories || brand.subCategories.length === 0) return false;
-          return brand.subCategories.some((subCat) => {
-            const brandSubCategory = subCat as SubCategory;
-            return brandSubCategory.slug === draftSubCategory ||
-                   brandSubCategory.documentId === subCategory.documentId;
-          });
-        });
-        setFilteredBrands(relatedBrands);
-      }
+      relevantProducts = products.filter((product) => {
+        const subCat = product.subCategory as SubCategory | undefined;
+        return subCat && subCat.slug === draftSubCategory;
+      });
     }
-    // Si une catégorie est sélectionnée (avec ou sans sous-catégories), afficher les marques de cette catégorie
+    // Sinon, si une catégorie est sélectionnée, filtrer par catégorie
     else if (draftCategory) {
-      const category = categories.find((cat) => cat.slug === draftCategory);
-
-      if (category) {
-        const relatedBrands = brands.filter((brand) => {
-          if (!brand.categories || brand.categories.length === 0) return false;
-          return brand.categories.some((cat) => {
-            const brandCategory = cat as Category;
-            return brandCategory.slug === draftCategory ||
-                   brandCategory.documentId === category.documentId;
-          });
-        });
-        setFilteredBrands(relatedBrands);
-      }
-    }
-    // Sinon, ne pas afficher de marques
-    else {
+      relevantProducts = products.filter((product) => {
+        const cat = product.category as Category | undefined;
+        return cat && cat.slug === draftCategory;
+      });
+    } else {
+      // Aucun filtre : ne pas afficher de marques
       setFilteredBrands([]);
+      return;
     }
-  }, [draftCategory, draftSubCategory, categories, subCategories, brands]);
+
+    // Extraire les marques uniques de ces produits
+    const brandMap = new Map<string, Brand>();
+    relevantProducts.forEach((product) => {
+      if (product.brand) {
+        const brand = product.brand as Brand;
+        if (!brandMap.has(brand.documentId)) {
+          brandMap.set(brand.documentId, brand);
+        }
+      }
+    });
+
+    setFilteredBrands(Array.from(brandMap.values()));
+  }, [draftCategory, draftSubCategory, products]);
 
   // Handlers pour les changements draft
   const handleDraftCategoryChange = (categorySlug: string | null) => {

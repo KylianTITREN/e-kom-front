@@ -310,12 +310,12 @@ export async function getSettings(): Promise<Settings | null> {
   }
 }
 
-// Récupérer toutes les catégories
+// Récupérer toutes les catégories qui ont au moins un produit
 export async function getCategories(): Promise<Category[]> {
   try {
     const url = await buildStrapiUrl('/api/categories', {
-      'populate[brands]': 'true',
-      'populate[subCategories]': 'true'
+      'filters[products][$notNull]': 'true',
+      'pagination[limit]': '-1'
     });
     
     const res = await fetch(url, cacheConfig);
@@ -330,12 +330,13 @@ export async function getCategories(): Promise<Category[]> {
   }
 }
 
-// Récupérer toutes les sous-catégories avec leur catégorie parente
+// Récupérer toutes les sous-catégories avec leur catégorie parente (qui ont au moins un produit)
 export async function getSubCategories(): Promise<SubCategory[]> {
   try {
     const url = await buildStrapiUrl('/api/subcategories', {
-      'populate[brands]': 'true',
-      'populate[category]': 'true'
+      'filters[products][$notNull]': 'true',
+      'populate[category]': 'true',
+      'pagination[limit]': '-1'
     });
 
     const res = await fetch(url, cacheConfig);
@@ -350,12 +351,13 @@ export async function getSubCategories(): Promise<SubCategory[]> {
   }
 }
 
-// Récupérer toutes les marques avec leurs catégories et sous-catégories
+// Récupérer toutes les marques (qui ont au moins un produit)
 export async function getBrands(): Promise<Brand[]> {
   try {
     const url = await buildStrapiUrl('/api/brands', {
-      'populate[categories]': 'true',
-      'populate[subCategories]': 'true'
+      'filters[products][$notNull]': 'true',
+      'populate[logo]': 'true',
+      'pagination[limit]': '-1'
     });
 
     const res = await fetch(url, cacheConfig);

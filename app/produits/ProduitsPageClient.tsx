@@ -206,6 +206,7 @@ export default function ProduitsPageClient({
 
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-4">
           <ProductFilters
+            products={initialProducts}
             categories={categories}
             subCategories={subCategories}
             brands={brands}

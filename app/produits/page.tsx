@@ -4,6 +4,8 @@ import ProduitsPageClient from "./ProduitsPageClient";
 
 export default async function ProduitsPage() {
   // Fetch toutes les données côté serveur
+  // Les catégories/sous-catégories/marques sont filtrées par Strapi pour ne retourner
+  // que celles qui ont au moins un produit associé
   const [products, categories, subCategories, brands, promoProducts] = await Promise.all([
     getProducts(),
     getCategories(),
