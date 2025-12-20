@@ -207,7 +207,7 @@ export default function ProduitsPageClient({
             </h2>
             {searchQuery && (
               <span className="px-3 py-1 bg-accent/10 text-accent text-sm rounded-full border border-accent/20">
-                Recherche : "{searchQuery}"
+                Recherche : &ldquo;{searchQuery}&rdquo;
               </span>
             )}
           </div>
