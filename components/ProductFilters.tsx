@@ -20,8 +20,6 @@ interface ProductFiltersProps {
 export default function ProductFilters({
   products,
   categories,
-  subCategories,
-  brands,
   selectedCategory,
   selectedSubCategory,
   selectedBrands,
