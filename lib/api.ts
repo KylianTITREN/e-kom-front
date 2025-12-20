@@ -335,7 +335,7 @@ export async function getCategories(): Promise<Category[]> {
   try {
     const url = await buildStrapiUrl('/api/categories', {
       'filters[products][$notNull]': 'true',
-      'pagination[limit]': '-1'
+      'pagination[limit]': '200'
     });
     
     const res = await fetch(url, cacheConfig);
@@ -356,7 +356,7 @@ export async function getSubCategories(): Promise<SubCategory[]> {
     const url = await buildStrapiUrl('/api/subcategories', {
       'filters[products][$notNull]': 'true',
       'populate[category]': 'true',
-      'pagination[limit]': '-1'
+      'pagination[limit]': '200'
     });
 
     const res = await fetch(url, cacheConfig);
@@ -376,7 +376,7 @@ export async function getBrands(): Promise<Brand[]> {
   try {
     const url = await buildStrapiUrl('/api/brands', {
       'filters[products][$notNull]': 'true',
-      'pagination[limit]': '-1'
+      'pagination[limit]': '200'
     });
 
     const res = await fetch(url, cacheConfig);
