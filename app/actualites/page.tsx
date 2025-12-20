@@ -1,7 +1,10 @@
-import { getNews } from "@/lib/api";
+import { getNews, extractFirstImageFromMarkdown } from "@/lib/api";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+// Revalider la page toutes les 60 secondes en production
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: process.env.SEO_NEWS_LIST_TITLE,
@@ -28,9 +31,13 @@ export default async function ActualitesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {news.map((article) => {
-            const imageUrl = article.image?.url
-              ? `${article.image.url}`
-              : "/placeholder.jpg";
+            // Essayer d'abord l'image principale
+            let imageUrl = article.image?.url ? `${article.image.url}` : null;
+            
+            // Si pas d'image principale, chercher dans le contenu
+            if (!imageUrl && article.content) {
+              imageUrl = extractFirstImageFromMarkdown(article.content);
+            }
 
             return (
               <Link
@@ -39,7 +46,7 @@ export default async function ActualitesPage() {
                 className="group block bg-background-card border border-accent/10 overflow-hidden hover:border-accent/30 transition-all duration-300"
               >
                 <div className="relative h-56 w-full bg-background overflow-hidden">
-                  {article.image ? (
+                  {imageUrl ? (
                     <Image
                       src={imageUrl}
                       alt={article.title}

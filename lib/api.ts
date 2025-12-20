@@ -2,7 +2,7 @@ import { Product, StrapiResponse, RichTextBlock, News, LegalPage, HomepageConten
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
 
-// Configuration du cache : désactivé en dev, activé en prod
+// Configuration du cache : désactivé en dev, revalidate 60s en prod
 const isDev = process.env.NODE_ENV === 'development';
 const cacheConfig = isDev ? { cache: 'no-store' as const } : { next: { revalidate: 60 } };
 
@@ -48,6 +48,26 @@ export function richTextToString(richText: RichTextBlock[] | string): string {
   return richText
     .map((block) => block.children.map((child) => child.text).join(""))
     .join("\n");
+}
+
+// Extraire la première image d'un contenu markdown
+export function extractFirstImageFromMarkdown(content: string | RichTextBlock[]): string | null {
+  const textContent = typeof content === 'string' ? content : richTextToString(content);
+  
+  // Regex pour trouver les images markdown: ![alt](url) ou ![alt](url "title")
+  const markdownImageRegex = /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/;
+  const match = textContent.match(markdownImageRegex);
+  
+  if (match && match[2]) {
+    const imageUrl = match[2];
+    // Si l'URL est relative (commence par /uploads/), ajouter le STRAPI_URL
+    if (imageUrl.startsWith('/uploads/')) {
+      return `${STRAPI_URL}${imageUrl}`;
+    }
+    return imageUrl;
+  }
+  
+  return null;
 }
 
 // Récupérer tous les produits
@@ -135,7 +155,7 @@ export async function getProductBySlug(slugOrId: string): Promise<Product | null
   }
 }
 
-// Récupérer les produits phares (limité à 6)
+// Récupérer les produits phares (limité à 3 - les 3 derniers ajoutés)
 export async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const url = await buildStrapiUrl('/api/products', {
@@ -146,7 +166,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
         'brand',
         'engravings'
       ]),
-      'pagination[limit]': '6',
+      'pagination[limit]': '3',
       'sort': 'createdAt:desc'
     });
 
@@ -356,7 +376,6 @@ export async function getBrands(): Promise<Brand[]> {
   try {
     const url = await buildStrapiUrl('/api/brands', {
       'filters[products][$notNull]': 'true',
-      'populate[logo]': 'true',
       'pagination[limit]': '-1'
     });
 

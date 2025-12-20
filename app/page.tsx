@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getFeaturedProducts, getNews, getHomepageContent } from "@/lib/api";
+import { getFeaturedProducts, getNews, getHomepageContent, extractFirstImageFromMarkdown } from "@/lib/api";
 import ProductGrid from "@/components/ProductGrid";
 import ProductCard from "@/components/ProductCard";
 import Button from "@/components/Button";
@@ -7,6 +7,9 @@ import HorizontalScroll from "@/components/HorizontalScroll";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { Metadata } from "next";
+
+// Revalider la page toutes les 60 secondes en production
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getHomepageContent();
@@ -107,9 +110,13 @@ export default async function HomePage() {
           {/* Desktop: grid classique */}
           <div className="hidden md:grid md:grid-cols-3 gap-8">
             {latestNews.map((article) => {
-              const imageUrl = article.image?.url
-                ? `${article.image.url}`
-                : "/placeholder.jpg";
+              // Essayer d'abord l'image principale
+              let imageUrl = article.image?.url ? `${article.image.url}` : null;
+              
+              // Si pas d'image principale, chercher dans le contenu
+              if (!imageUrl && article.content) {
+                imageUrl = extractFirstImageFromMarkdown(article.content);
+              }
 
               return (
                 <Link
@@ -118,7 +125,7 @@ export default async function HomePage() {
                   className="group block bg-background-card border border-accent/10 overflow-hidden hover:border-accent/30 transition-all duration-300"
                 >
                   <div className="relative h-56 w-full bg-background overflow-hidden">
-                    {article.image ? (
+                    {imageUrl ? (
                       <Image
                         src={imageUrl}
                         alt={article.title}
@@ -163,9 +170,13 @@ export default async function HomePage() {
           <div className="md:hidden">
             <HorizontalScroll itemWidth="90vw">
               {latestNews.map((article) => {
-                const imageUrl = article.image?.url
-                  ? `${article.image.url}`
-                  : "/placeholder.jpg";
+                // Essayer d'abord l'image principale
+                let imageUrl = article.image?.url ? `${article.image.url}` : null;
+                
+                // Si pas d'image principale, chercher dans le contenu
+                if (!imageUrl && article.content) {
+                  imageUrl = extractFirstImageFromMarkdown(article.content);
+                }
 
                 return (
                   <Link
@@ -174,7 +185,7 @@ export default async function HomePage() {
                     className="group block bg-background-card border border-accent/10 overflow-hidden hover:border-accent/30 transition-all duration-300"
                   >
                     <div className="relative h-56 w-full bg-background overflow-hidden">
-                      {article.image ? (
+                      {imageUrl ? (
                         <Image
                           src={imageUrl}
                           alt={article.title}

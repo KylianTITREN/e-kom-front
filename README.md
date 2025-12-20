@@ -5,25 +5,28 @@
 ## 📋 Prérequis
 
 - Node.js 18+ et npm/yarn/pnpm
-- Backend Strapi CMS fonctionnel (http://localhost:1337)
+- Backend Strapi CMS fonctionnel (<http://localhost:1337>)
 - Compte Stripe (clé publique pour le checkout)
 
 ## 🚀 Installation
 
 1. **Cloner et installer les dépendances** :
+
 ```bash
 cd e-kom
 npm install
 ```
 
-2. **Configurer les variables d'environnement** :
+1. **Configurer les variables d'environnement** :
 Créer un fichier `.env.local` à la racine :
+
 ```env
 NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
 ```
 
-3. **Lancer le serveur de développement** :
+1. **Lancer le serveur de développement** :
+
 ```bash
 npm run dev
 ```
@@ -66,16 +69,19 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 ## 🎨 Pages principales
 
 ### 1. **Accueil** (`/`)
+
 - Bannière hero
 - Présentation
 - Produits phares (6 premiers)
 - Call-to-action
 
 ### 2. **Boutique** (`/produits`)
+
 - Liste complète des produits
 - Grille responsive (3 colonnes desktop / 1 mobile)
 
 ### 3. **Fiche produit** (`/produit/[slug]`)
+
 - Photo du produit
 - Description
 - Prix
@@ -83,12 +89,14 @@ Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
 - Breadcrumb
 
 ### 4. **Panier** (`/panier`)
+
 - Liste des articles
 - Gestion des quantités (+/-)
 - Total
 - Bouton de paiement Stripe
 
 ### 5. **Contact** (`/contact`)
+
 - Formulaire (nom, email, message)
 - Log console (à remplacer par envoi email)
 
@@ -103,6 +111,7 @@ Le panier est géré via un **Context React** et stocké dans le **localStorage*
 ## 💳 Paiement Stripe
 
 Le checkout utilise **Stripe Checkout** :
+
 1. L'utilisateur clique sur "Payer"
 2. Appel au backend Strapi : `/api/order/create-checkout-session`
 3. Redirection vers Stripe avec le `sessionId`
@@ -111,7 +120,9 @@ Le checkout utilise **Stripe Checkout** :
 ## 🎨 Personnalisation
 
 ### Couleurs
+
 Modifier dans `tailwind.config.ts` :
+
 ```ts
 colors: {
   primary: "#0f172a", // Couleur principale
@@ -119,9 +130,11 @@ colors: {
 ```
 
 ### Logo
+
 Remplacer "e-kom" dans `components/Header.tsx` par votre logo.
 
 ### Contenu
+
 - Textes : modifier directement dans les pages
 - Images : ajouter dans `/public/`
 
@@ -138,15 +151,20 @@ Remplacer "e-kom" dans `components/Header.tsx` par votre logo.
 
 ### Cache API (ISR - Incremental Static Regeneration)
 
-Toutes les API calls utilisent des stratégies de cache optimisées :
+En **production**, toutes les pages et API calls utilisent un cache uniforme de **60 secondes** (`revalidate: 60`) :
 
-- **Produits** : Cache 2h (`revalidate: 7200`)
-- **Actualités** : Cache 30min (`revalidate: 1800`)
-- **Pages légales** : Cache 24h (`revalidate: 86400`)
-- **Settings** : Cache 24h (`revalidate: 86400`)
-- **Homepage** : Cache 1h (`revalidate: 3600`)
+- **Page d'accueil** : Cache 60s (avec produits phares et actualités)
+- **Page produits** : Cache 60s (liste complète)
+- **Page actualités** : Cache 60s (liste des news)
+- **API Strapi** : Cache 60s pour tous les appels (produits, catégories, marques, etc.)
 
-Cela réduit de **90%+** les requêtes vers Strapi et améliore les performances de **50-70%**.
+En **développement**, le cache est complètement désactivé (`cache: 'no-store'`) pour faciliter les tests.
+
+> ⚠️ **Note** : Après modification dans Strapi, il faut attendre jusqu'à 60 secondes pour voir les changements en production. Pour un rafraîchissement immédiat, vous pouvez :
+>
+> - Utiliser le mode preview/draft de Next.js
+> - Redéployer l'application
+> - Vider le cache navigateur (Ctrl+Shift+R ou Cmd+Shift+R)
 
 ### Images optimisées
 
@@ -187,12 +205,14 @@ npm run lint     # Vérifier le code
 Le front-end attend les endpoints suivants :
 
 ### Produits
+
 ```
 GET /api/products?populate=image
 GET /api/products?filters[slug][$eq]=mon-produit&populate=image
 ```
 
 Structure de réponse :
+
 ```json
 {
   "data": [
@@ -217,6 +237,7 @@ Structure de réponse :
 ```
 
 ### Checkout Stripe
+
 ```
 POST /api/order/create-checkout-session
 Body: { "items": [...] }
@@ -226,6 +247,7 @@ Response: { "sessionId": "cs_xxx" }
 ## 🆘 Support
 
 Pour toute question :
+
 - Vérifier que Strapi est bien lancé sur le port 1337
 - Vérifier les variables d'environnement
 - Consulter la console du navigateur pour les erreurs

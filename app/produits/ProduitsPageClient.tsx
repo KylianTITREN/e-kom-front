@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { Product, Category, SubCategory, Brand } from "@/types";
 import { richTextToString } from "@/lib/api";
 import ProductFilters from "@/components/ProductFilters";
 import ProductGrid from "@/components/ProductGrid";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface ProduitsPageClientProps {
   initialProducts: Product[];
@@ -23,8 +23,9 @@ export default function ProduitsPageClient({
   promoProducts,
 }: ProduitsPageClientProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const categoryFromUrl = searchParams.get("category");
-  const searchQuery = searchParams.get("q");
+  const searchQuery = searchParams.get("search");
 
   // États des filtres
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryFromUrl);
@@ -34,6 +35,9 @@ export default function ProduitsPageClient({
   const [showLimitedEditionOnly, setShowLimitedEditionOnly] = useState(false);
   const [showEndOfSeriesOnly, setShowEndOfSeriesOnly] = useState(false);
   const [specialFiltersOpen, setSpecialFiltersOpen] = useState(false);
+  
+  // État local pour la recherche
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || "");
 
   // États pour le tri et la pagination
   const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "price-asc" | "price-desc">("name-asc");
@@ -153,6 +157,22 @@ export default function ProduitsPageClient({
     setShowPromotionsOnly(false);
   };
 
+  // Fonction pour gérer la recherche
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedQuery = localSearchQuery.trim();
+    if (trimmedQuery) {
+      router.push(`/produits?search=${encodeURIComponent(trimmedQuery)}`);
+    } else {
+      router.push('/produits');
+    }
+  };
+
+  const handleClearSearch = () => {
+    setLocalSearchQuery("");
+    router.push('/produits');
+  };
+
   // Calculer la pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -179,11 +199,18 @@ export default function ProduitsPageClient({
       {/* Section Tous les produits avec filtres */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-title font-semibold text-primary">
-            {selectedCategory || selectedSubCategory || selectedBrands.length > 0 || showPromotionsOnly || showLimitedEditionOnly || showEndOfSeriesOnly
-              ? "Produits filtrés"
-              : "Tous nos produits"}
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-title font-semibold text-primary">
+              {selectedCategory || selectedSubCategory || selectedBrands.length > 0 || showPromotionsOnly || showLimitedEditionOnly || showEndOfSeriesOnly || searchQuery
+                ? "Produits filtrés"
+                : "Tous nos produits"}
+            </h2>
+            {searchQuery && (
+              <span className="px-3 py-1 bg-accent/10 text-accent text-sm rounded-full border border-accent/20">
+                Recherche : "{searchQuery}"
+              </span>
+            )}
+          </div>
 
           {/* Sélecteur de tri */}
           <div className="flex items-center gap-2">
@@ -205,6 +232,40 @@ export default function ProduitsPageClient({
         </div>
 
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 mb-4">
+          {/* Champ de recherche */}
+          <form onSubmit={handleSearch} className="flex-1 md:flex-initial">
+            <div className="relative">
+              <input
+                type="text"
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
+                placeholder="Rechercher un produit..."
+                className="w-full md:w-80 px-4 py-3 pr-24 border border-accent/20 rounded-lg bg-white text-text focus:outline-none focus:ring-2 focus:ring-accent/50 text-sm"
+              />
+              {localSearchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-14 top-1/2 -translate-y-1/2 text-text-secondary hover:text-accent transition-colors"
+                  aria-label="Effacer la recherche"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-accent hover:text-accent-dark transition-colors"
+                aria-label="Rechercher"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+              </button>
+            </div>
+          </form>
+
           <ProductFilters
             products={initialProducts}
             categories={categories}

@@ -99,25 +99,16 @@ export default async function NewsDetailPage({
           </time>
         )}
 
-        <div className="relative h-96 w-full mb-10 overflow-hidden border border-accent/10">
-          {article.image ? (
+        {article.image && (
+          <div className="relative h-96 w-full mb-10 overflow-hidden border border-accent/10">
             <Image
               src={imageUrl}
               alt={article.title}
               fill
               className="object-cover"
             />
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-beige/60">
-              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="16" width="48" height="32" rx="6" fill="#C7B299" stroke="#8B6F4E" strokeWidth="2"/>
-                <path d="M16 40L24 32L32 40L40 28L48 40" stroke="#8B6F4E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="20" cy="24" r="3" fill="#8B6F4E"/>
-              </svg>
-              <span className="mt-2 text-primary text-xs font-medium">Aucune image</span>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="prose max-w-none">
           {article.excerpt && (

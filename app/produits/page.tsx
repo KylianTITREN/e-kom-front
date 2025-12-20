@@ -2,6 +2,9 @@ import { Suspense } from "react";
 import { getProducts, getCategories, getSubCategories, getBrands, getPromoProducts } from "@/lib/api";
 import ProduitsPageClient from "./ProduitsPageClient";
 
+// Revalider la page toutes les 60 secondes en production
+export const revalidate = 60;
+
 export default async function ProduitsPage() {
   // Fetch toutes les données côté serveur
   // Les catégories/sous-catégories/marques sont filtrées par Strapi pour ne retourner
