@@ -74,6 +74,7 @@ export function extractFirstImageFromMarkdown(content: string | RichTextBlock[])
 export async function getProducts(): Promise<Product[]> {
   try {
     const url = await buildStrapiUrl('/api/products', {
+      'pagination[pageSize]': '999999',
       ...buildPopulateParams([
         'images',
         'category',
