@@ -173,6 +173,12 @@ export default function ProduitsPageClient({
     router.push('/produits');
   };
 
+  // Fonction pour changer de page avec scroll vers le haut
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Calculer la pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
