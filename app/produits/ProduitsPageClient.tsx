@@ -534,7 +534,10 @@ export default function ProduitsPageClient({
       {totalPages > 1 && (
         <div className="mt-12 flex items-center justify-center gap-2">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => {
+              const newPage = Math.max(currentPage - 1, 1);
+              if (newPage !== currentPage) handlePageChange(newPage);
+            }}
             disabled={currentPage === 1}
             className="px-4 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
@@ -545,7 +548,7 @@ export default function ProduitsPageClient({
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
-                onClick={() => setCurrentPage(page)}
+                onClick={() => handlePageChange(page)}
                 className={`px-4 py-2 rounded-lg transition-colors ${
                   currentPage === page
                     ? "bg-accent text-white"
@@ -558,7 +561,10 @@ export default function ProduitsPageClient({
           </div>
 
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() => {
+              const newPage = Math.min(currentPage + 1, totalPages);
+              if (newPage !== currentPage) handlePageChange(newPage);
+            }}
             disabled={currentPage === totalPages}
             className="px-4 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
