@@ -83,9 +83,32 @@ export default async function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: process.env.SEO_SITE_NAME || 'E-Kom',
+    alternateName: process.env.SEO_SITE_NAME || 'E-Kom',
     url: process.env.NEXT_PUBLIC_SITE_URL,
-    logo: process.env.SEO_HOME_ICON,
+    logo: {
+      '@type': 'ImageObject',
+      url: process.env.SEO_HOME_ICON,
+      width: '512',
+      height: '512'
+    },
     description: process.env.SEO_HOME_DESCRIPTION,
+    sameAs: []
+  };
+
+  // WebSite schema pour le nom du site dans Google
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: process.env.SEO_SITE_NAME || 'E-Kom',
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+    publisher: {
+      '@type': 'Organization',
+      name: process.env.SEO_SITE_NAME || 'E-Kom',
+      logo: {
+        '@type': 'ImageObject',
+        url: process.env.SEO_HOME_ICON
+      }
+    }
   };
 
   return (
@@ -94,6 +117,10 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
       <body className="font-sans flex flex-col min-h-screen bg-white text-text">
