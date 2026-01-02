@@ -239,8 +239,8 @@ export default function ProduitsPageClient({
     pages.push(1);
 
     // Calculer la plage autour de la page courante
-    let start = Math.max(2, currentPage - 1);
-    let end = Math.min(totalPages - 1, currentPage + 1);
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
 
     // Ajouter "..." si nécessaire avant
     if (start > 2) {
