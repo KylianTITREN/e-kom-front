@@ -45,6 +45,34 @@ export default function ProduitsPageClient({
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(initialProducts);
   const itemsPerPage = 25;
 
+  // État pour le bouton de scroll
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  // Détecter le scroll pour afficher/masquer le bouton
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+
+      // Afficher le bouton après 300px de scroll
+      const hasScrolledEnough = scrollTop > 300;
+
+      // Trouver la pagination et cacher le bouton 200px avant
+      const paginationElement = document.querySelector('[class*="mt-12"]'); // La section pagination
+      let isNearPagination = false;
+
+      if (paginationElement) {
+        const paginationTop = paginationElement.getBoundingClientRect().top + scrollTop;
+        isNearPagination = scrollTop + windowHeight >= paginationTop - 200;
+      }
+
+      setShowScrollButton(hasScrolledEnough && !isNearPagination);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Mettre à jour la catégorie sélectionnée si l'URL change
   useEffect(() => {
     setSelectedCategory(categoryFromUrl);
@@ -179,11 +207,63 @@ export default function ProduitsPageClient({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Fonction de scroll to bottom (au-dessus du footer)
+  const scrollToBottom = () => {
+    const footer = document.querySelector('footer');
+    if (footer) {
+      const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+      const offset = window.innerHeight - 100;
+      window.scrollTo({ top: footerTop - offset, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+    }
+  };
+
   // Calculer la pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  // Générer les numéros de pages à afficher (version intelligente)
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 7; // Nombre max de boutons visibles sur desktop
+
+    if (totalPages <= maxVisible) {
+      // Si peu de pages, tout afficher
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    // Toujours afficher la première page
+    pages.push(1);
+
+    // Calculer la plage autour de la page courante
+    let start = Math.max(2, currentPage - 1);
+    let end = Math.min(totalPages - 1, currentPage + 1);
+
+    // Ajouter "..." si nécessaire avant
+    if (start > 2) {
+      pages.push('...');
+    }
+
+    // Ajouter les pages du milieu
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    // Ajouter "..." si nécessaire après
+    if (end < totalPages - 1) {
+      pages.push('...');
+    }
+
+    // Toujours afficher la dernière page
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
 
   return (
     <div>
@@ -532,51 +612,127 @@ export default function ProduitsPageClient({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-12 flex items-center justify-center gap-2">
-          <button
-            onClick={() => {
-              const newPage = Math.max(currentPage - 1, 1);
-              if (newPage !== currentPage) handlePageChange(newPage);
-            }}
-            disabled={currentPage === 1}
-            className="px-4 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Précédent
-          </button>
+        <div className="mt-12">
+          {/* Version Mobile : Simple avec page courante */}
+          <div className="flex md:hidden items-center justify-center gap-2">
+            <button
+              onClick={() => {
+                const newPage = Math.max(currentPage - 1, 1);
+                if (newPage !== currentPage) handlePageChange(newPage);
+              }}
+              disabled={currentPage === 1}
+              className="px-3 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+            >
+              ‹
+            </button>
 
-          <div className="flex gap-2">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  currentPage === page
-                    ? "bg-accent text-white"
-                    : "bg-white border border-accent/20 text-text hover:bg-gray-50"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+            <div className="px-4 py-2 bg-accent text-white rounded-lg font-medium text-sm">
+              Page {currentPage} / {totalPages}
+            </div>
+
+            <button
+              onClick={() => {
+                const newPage = Math.min(currentPage + 1, totalPages);
+                if (newPage !== currentPage) handlePageChange(newPage);
+              }}
+              disabled={currentPage === totalPages}
+              className="px-3 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+            >
+              ›
+            </button>
           </div>
 
-          <button
-            onClick={() => {
-              const newPage = Math.min(currentPage + 1, totalPages);
-              if (newPage !== currentPage) handlePageChange(newPage);
-            }}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Suivant
-          </button>
+          {/* Version Desktop : Avec numéros de pages */}
+          <div className="hidden md:flex items-center justify-center gap-2">
+            <button
+              onClick={() => {
+                const newPage = Math.max(currentPage - 1, 1);
+                if (newPage !== currentPage) handlePageChange(newPage);
+              }}
+              disabled={currentPage === 1}
+              className="px-4 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Précédent
+            </button>
+
+            <div className="flex gap-2">
+              {getPageNumbers().map((page, index) => (
+                page === '...' ? (
+                  <span key={`ellipsis-${index}`} className="px-4 py-2 text-text-secondary">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page as number)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      currentPage === page
+                        ? "bg-accent text-white"
+                        : "bg-white border border-accent/20 text-text hover:bg-gray-50"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              ))}
+            </div>
+
+            <button
+              onClick={() => {
+                const newPage = Math.min(currentPage + 1, totalPages);
+                if (newPage !== currentPage) handlePageChange(newPage);
+              }}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 border border-accent/20 rounded-lg bg-white text-text hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Suivant
+            </button>
+          </div>
         </div>
       )}
 
       {/* Informations sur la pagination */}
-      <div className="mt-4 text-center text-sm text-text-secondary">
-        Affichage de {startIndex + 1} à {Math.min(endIndex, filteredProducts.length)} sur {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''}
+      <div className="mt-4 flex flex-col items-center gap-2">
+        <div className="text-center text-sm text-text-secondary">
+          Affichage de {startIndex + 1} à {Math.min(endIndex, filteredProducts.length)} sur {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''}
+        </div>
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="text-sm text-accent hover:text-accent-dark transition-colors flex items-center gap-1 group"
+        >
+          <span>Retour en haut</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+          </svg>
+        </button>
       </div>
+
+      {/* Bouton flottant scroll to bottom */}
+      {showScrollButton && (
+        <button
+          onClick={scrollToBottom}
+          className="fixed bottom-8 right-8 p-3 bg-white text-text border border-gray-300 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110 z-50"
+          aria-label="Descendre en bas"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2.5}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }
