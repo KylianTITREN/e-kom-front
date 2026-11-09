@@ -12,16 +12,13 @@ export async function generateMetadata({
   const { slug } = await params;
   const page = await getLegalPageBySlug(slug);
 
-  if (!page) {
-    return {
-      title: `Page introuvable | ${process.env.SEO_SITE_NAME}`,
-      description: process.env.SEO_LEGAL_GENERIC_DESCRIPTION,
-      keywords: process.env.SEO_LEGAL_GENERIC_KEYWORDS,
-    };
-  }
+  // Vrai 404 HTTP (voir app/produit/[slug]/page.tsx)
+  if (!page) notFound();
 
   return {
-    title: page.seoTitle || `${page.title} – ${process.env.SEO_SITE_NAME}`,
+    // seoTitle (Strapi) contient déjà le nom du site → absolute pour éviter le doublon du template
+    title: page.seoTitle ? { absolute: page.seoTitle } : page.title,
+    alternates: { canonical: `/legal/${page.slug}` },
     description: page.seoDescription || process.env.SEO_LEGAL_DESCRIPTION,
     keywords: page.seoKeywords || process.env.SEO_LEGAL_KEYWORDS,
   };

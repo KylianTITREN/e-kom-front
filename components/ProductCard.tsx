@@ -106,7 +106,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </h3>
         </Link>
         <p className="text-xl font-semibold text-accent mb-5">{price.toFixed(2)} €</p>
-        <Button onClick={handleAddToCart} variant="outline" fullWidth>
+        <Button onClick={handleAddToCart} data-umami-event="Ajout panier" data-umami-event-produit={name} variant="outline" fullWidth>
           Ajouter au panier
         </Button>
       </div>

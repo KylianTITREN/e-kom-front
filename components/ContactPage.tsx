@@ -110,7 +110,7 @@ export default function ContactPage() {
           />
         </div>
 
-        <Button type="submit" fullWidth disabled={isSubmitting}>
+        <Button type="submit" data-umami-event="Envoi formulaire contact" fullWidth disabled={isSubmitting}>
           {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
         </Button>
       </form>

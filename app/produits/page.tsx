@@ -1,11 +1,26 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { getProducts, getCategories, getSubCategories, getBrands, getPromoProducts } from "@/lib/api";
 import ProduitsPageClient from "./ProduitsPageClient";
 
-// Revalider la page toutes les 60 secondes en production
-export const revalidate = 60;
+export const metadata: Metadata = {
+  title: { absolute: process.env.SEO_SHOP_TITLE || "Boutique" },
+  description: process.env.SEO_SHOP_DESCRIPTION,
+  keywords: process.env.SEO_SHOP_KEYWORDS,
+  // Les variantes filtrées (?category=, ?search=) pointent vers la page boutique principale
+  alternates: { canonical: "/produits" },
+};
 
-export default async function ProduitsPage() {
+interface ProduitsPageProps {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function ProduitsPage({ searchParams }: ProduitsPageProps) {
+  // Lire searchParams rend la page dynamique : useSearchParams() côté client
+  // est alors rendu sur le serveur, et la grille produits est dans le HTML
+  // (sinon Google ne voit que le fallback "Chargement..."). Les fetchs Strapi restent en cache 60 s.
+  await searchParams;
+
   // Fetch toutes les données côté serveur
   // Les catégories/sous-catégories/marques sont filtrées par Strapi pour ne retourner
   // que celles qui ont au moins un produit associé

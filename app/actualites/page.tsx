@@ -7,7 +7,8 @@ import Link from "next/link";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: process.env.SEO_NEWS_LIST_TITLE,
+  title: { absolute: process.env.SEO_NEWS_LIST_TITLE || "Actualités" },
+  alternates: { canonical: "/actualites" },
   description: process.env.SEO_NEWS_LIST_DESCRIPTION,
   keywords: process.env.SEO_NEWS_LIST_KEYWORDS
 };
