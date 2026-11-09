@@ -11,17 +11,12 @@ export async function generateMetadata({ params }: {
   const { slug } = await params;
   const article = await getNewsBySlug(slug);
 
-  if (!article) {
-    return {
-      title: `Article introuvable | ${process.env.SEO_SITE_NAME}`,
-      description: process.env.SEO_NEWS_DESCRIPTION,
-      keywords: process.env.SEO_NEWS_KEYWORDS,
-    };
-  }
+  // Vrai 404 HTTP (voir app/produit/[slug]/page.tsx)
+  if (!article) notFound();
 
-  const baseTitle = process.env.SEO_SITE_NAME;
-
-  const title = `${article.title} – ${baseTitle}`;
+  // Le template du layout ajoute déjà " | <nom du site>"
+  const title = article.title;
+  const canonical = `/actualites/${article.slug}`;
 
   // Description dynamique basée sur l'extrait ou le contenu
   const description = article.excerpt
@@ -45,10 +40,14 @@ export async function generateMetadata({ params }: {
     title,
     description,
     keywords,
+    alternates: { canonical },
     openGraph: {
       title,
       description,
       type: "article",
+      url: canonical,
+      siteName: process.env.SEO_SITE_NAME,
+      locale: "fr_FR",
       publishedTime: article.startDate,
       images: imageUrl ? [{ url: imageUrl, alt: article.title }] : [],
     },

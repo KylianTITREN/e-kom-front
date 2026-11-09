@@ -182,6 +182,7 @@ export default function CartPageClient() {
           </Button>
           <Button
             onClick={handleCheckout}
+            data-umami-event="Clic payer"
             disabled={isLoading || (hasAgeRestrictedItems && !ageConfirmed)}
             fullWidth
           >

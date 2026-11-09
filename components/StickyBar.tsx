@@ -53,6 +53,8 @@ export default function StickyBar({ product }: StickyBarProps) {
         <div className="w-full md:w-auto px-3 md:px-0">
           <Button
             onClick={handleAddToCart}
+            data-umami-event="Ajout panier"
+            data-umami-event-produit={name}
             variant="primary"
             className="w-full md:w-auto min-w-[160px] px-6 py-4 md:px-8 md:py-3"
           >

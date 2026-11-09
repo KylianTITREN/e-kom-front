@@ -92,6 +92,20 @@ export default function Footer({ settings }: FooterProps) {
               &copy; {currentYear} {host}. Tous droits réservés.
             </p>
             <div className="flex gap-6">
+              {Object.entries(settings?.socialLinks || {})
+                .filter(([, url]) => url)
+                .map(([network, url]) => (
+                  <a
+                    key={network}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-umami-event={`Clic ${network}`}
+                    className="text-sm capitalize text-background hover:text-accent transition-colors"
+                  >
+                    {network}
+                  </a>
+                ))}
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@ import { CartProvider } from "@/context/CartContext";
 import { Analytics } from "@vercel/analytics/next";
 import { draftMode } from "next/headers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -78,6 +79,12 @@ export default async function RootLayout({
   const settings = await getSettings();
   const { isEnabled } = await draftMode();
 
+  // Adresse Strapi au format "rue\nCP VILLE" → PostalAddress
+  const [street, cityLine = ""] = (settings?.address || "").split("\n").map((l) => l.trim());
+  const cityMatch = cityLine.match(/^(\d{5})\s+(.+)$/);
+  const sameAs = Object.values(settings?.socialLinks || {}).filter(Boolean);
+  const umamiId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+
   // Données structurées JSON-LD pour Google
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -92,7 +99,17 @@ export default async function RootLayout({
       height: '512'
     },
     description: process.env.SEO_HOME_DESCRIPTION,
-    sameAs: []
+    ...(settings?.siteEmail && { email: settings.siteEmail }),
+    ...(settings?.contactPhone && { telephone: settings.contactPhone }),
+    ...(street && {
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: street,
+        ...(cityMatch && { postalCode: cityMatch[1], addressLocality: cityMatch[2] }),
+        addressCountry: 'FR',
+      },
+    }),
+    sameAs,
   };
 
   // WebSite schema pour le nom du site dans Google
@@ -135,6 +152,14 @@ export default async function RootLayout({
         </CartProvider>
         <Analytics/>
         <SpeedInsights />
+        {/* Umami : statistiques sans cookie (pas de bandeau de consentement), activé seulement si l'ID est défini */}
+        {umamiId && (
+          <Script
+            src="https://cloud.umami.is/script.js"
+            data-website-id={umamiId}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );

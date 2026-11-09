@@ -26,6 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: page.seoTitle || `${page.heroTitle} – ${process.env.SEO_SITE_NAME}`,
     description: page.seoDescription || process.env.SEO_LEGAL_DESCRIPTION,
     keywords: page.seoKeywords || process.env.SEO_LEGAL_KEYWORDS,
+    alternates: { canonical: "/" },
   };
 }
 
